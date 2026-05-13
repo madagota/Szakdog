@@ -118,26 +118,100 @@ export default function App() {
 
   if (currentPage === 'product' && selectedProduct) {
     return (
-      <ProductDetailsStatic
-        product={selectedProduct}
-        onBack={() => setCurrentPage('home')}
-        onAddToCart={addToCart}
-      />
+      <div className="min-h-screen bg-white">
+        {showWelcome && (
+          <div className="fixed inset-0 z-[100] bg-black bg-opacity-80 flex items-center justify-center p-4">
+            <div className="bg-white rounded-[32px] border border-black/10 p-8 max-w-lg text-center shadow-2xl shadow-black/10">
+              <div className="mx-auto mb-6 w-20 h-20 rounded-3xl bg-black text-white flex items-center justify-center text-3xl font-bold">
+                A
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-black">Üdvözöllek a kutatásomban!</h2>
+              <p className="text-gray-700 mb-6 text-base sm:text-lg leading-7">
+                Ez a weboldal egy szakdolgozat kutatás része. A feladatod nagyon egyszerű:
+                <br/><br/>
+                <strong className="text-black text-lg sm:text-xl">Nézz körül, és &quot;rendelj meg&quot; egy fejhallgatót!</strong>
+                <br/><br/>
+                A fizetésnél adj meg kamu adatokat, ez csak egy szimuláció. A rendelés végén egy rövid kérdőív vár rád.
+              </p>
+              <button 
+                onClick={() => setShowWelcome(false)} 
+                className="w-full bg-black text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-900 transition-colors"
+              >
+                Kezdés!
+              </button>
+            </div>
+          </div>
+        )}
+
+        {!showWelcome && (
+          <HeaderPro
+            cartCount={cartCount}
+            onCartClick={() => setCartOpen(true)}
+            onLogoClick={() => setCurrentPage('home')}
+            animated={false}
+            currentPage={currentPage}
+          />
+        )}
+
+        <ProductDetailsStatic
+          product={selectedProduct}
+          onBack={() => setCurrentPage('home')}
+          onAddToCart={addToCart}
+        />
+        <FooterPro />
+      </div>
     );
   }
 
   if (currentPage === 'checkout') {
     return (
-      <Checkout
-        cartItems={cartItems}
-        cartTotal={cartTotal}
-        onBack={() => {
-          setCurrentPage('home');
-          setCartOpen(true);
-        }}
-        onComplete={handleCheckoutComplete}
-        animated={false}
-      />
+      <div className="min-h-screen bg-white">
+        {showWelcome && (
+          <div className="fixed inset-0 z-[100] bg-black bg-opacity-80 flex items-center justify-center p-4">
+            <div className="bg-white rounded-[32px] border border-black/10 p-8 max-w-lg text-center shadow-2xl shadow-black/10">
+              <div className="mx-auto mb-6 w-20 h-20 rounded-3xl bg-black text-white flex items-center justify-center text-3xl font-bold">
+                A
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-black">Üdvözöllek a kutatásomban!</h2>
+              <p className="text-gray-700 mb-6 text-base sm:text-lg leading-7">
+                Ez a weboldal egy szakdolgozat kutatás része. A feladatod nagyon egyszerű:
+                <br/><br/>
+                <strong className="text-black text-lg sm:text-xl">Nézz körül, és &quot;rendelj meg&quot; egy fejhallgatót!</strong>
+                <br/><br/>
+                A fizetésnél nyugodtan adj meg kamu adatokat, ez csak egy szimuláció. A rendelés végén egy rövid kérdőív vár rád.
+              </p>
+              <button 
+                onClick={() => setShowWelcome(false)} 
+                className="w-full bg-black text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-900 transition-colors"
+              >
+                Értettem, kezdjük a tesztet!
+              </button>
+            </div>
+          </div>
+        )}
+
+        {!showWelcome && (
+          <HeaderPro
+            cartCount={cartCount}
+            onCartClick={() => setCartOpen(true)}
+            onLogoClick={() => setCurrentPage('home')}
+            animated={false}
+            currentPage={currentPage}
+          />
+        )}
+
+        <Checkout
+          cartItems={cartItems}
+          cartTotal={cartTotal}
+          onBack={() => {
+            setCurrentPage('home');
+            setCartOpen(true);
+          }}
+          onComplete={handleCheckoutComplete}
+          animated={false}
+        />
+        <FooterPro />
+      </div>
     );
   }
 
@@ -171,12 +245,15 @@ export default function App() {
       )}
       {/* --- FELUGRÓ ABLAK VÉGE --- */}
 
-      <HeaderPro
-        cartCount={cartCount}
-        onCartClick={() => setCartOpen(true)}
-        onLogoClick={() => setCurrentPage('home')}
-        animated={false}
-      />
+      {!showWelcome && (
+        <HeaderPro
+          cartCount={cartCount}
+          onCartClick={() => setCartOpen(true)}
+          onLogoClick={() => setCurrentPage('home')}
+          animated={false}
+          currentPage={currentPage}
+        />
+      )}
 
       {/* Main content padding for sticky header */}
       <div className="pt-20">
@@ -265,6 +342,29 @@ export default function App() {
         </div>
       </section>
 
+{/* Features Section */}
+<section id="features" className="bg-gray-50 py-12 sm:py-16 md:py-20">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <h2 className="text-3xl sm:text-4xl text-center mb-10 sm:mb-16">
+      Miért válassza az AudioA-t?
+    </h2>
+    <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
+      {[
+        { title: "Kiváló hangzás", description: "Tapasztalja meg a stúdió minőségű hangzást mély basszussal és kristálytiszta magasakkal." },
+        { title: "Egész napos kényelem", description: "Ergonomikus kialakítás prémium párnázással a hosszú zenehallgatáshoz." },
+        { title: "Hosszú üzemidő", description: "Akár 40 óra vezeték nélküli lejátszás egyetlen töltéssel." }
+      ].map((feature, index) => (
+        <div key={index} className="text-center">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 bg-black rounded-full mx-auto mb-3 sm:mb-4 flex items-center justify-center">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-white rounded-full" />
+          </div>
+          <h3 className="text-lg sm:text-xl mb-2 sm:mb-3">{feature.title}</h3>
+          <p className="text-sm sm:text-base text-gray-600">{feature.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
       {/* Termékek Szekció */}
       <section id="products" className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-20">
         <h2 className="text-4xl text-center font-bold mb-16">Kollekciónk</h2>

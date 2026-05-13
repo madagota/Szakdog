@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ShoppingCart, Menu, X } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface HeaderProProps {
   cartCount: number;
@@ -7,22 +8,31 @@ interface HeaderProProps {
   onLogoClick: () => void;
   animated?: boolean;
   onFeaturesClick?: () => void;
+  currentPage?: 'home' | 'product' | 'checkout';
+  cartBounce?: boolean;
 }
 
-export function HeaderPro({ cartCount, onCartClick, onLogoClick, animated = false, onFeaturesClick }: HeaderProProps) {
+export function HeaderPro({ cartCount, onCartClick, onLogoClick, animated = false, onFeaturesClick, currentPage = 'home', cartBounce = false }: HeaderProProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   const navLinks = [
-    { href: '#products', label: 'Termékek' },
-    { href: '#features', label: 'Jellemzők' },
-    { href: '#about', label: 'Rólunk' }
+    { href: '#products', label: currentPage === 'home' ? 'Termékek' : 'Menü', action: currentPage === 'home' ? undefined : onLogoClick },
+    { href: '#features', label: 'Jellemzők', action: undefined },
+    { href: '#about', label: 'Rólunk', action: undefined }
   ];
 
-  const handleNavClick = (href: string) => {
+  const handleNavClick = (href: string, action?: () => void) => {
     setIsMobileMenuOpen(false);
-    if (href === '#features' && onFeaturesClick) {
+    if (action) {
+      action();
+    } else if (href === '#features' && onFeaturesClick) {
       onFeaturesClick();
-    } else {
+    } else if (href.startsWith('#')) {
       const element = document.querySelector(href);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
@@ -33,14 +43,17 @@ export function HeaderPro({ cartCount, onCartClick, onLogoClick, animated = fals
   if (animated) {
     // B verzió animációval
     return (
-      <header className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100">
+      <header className="fixed top-0 w-full z-[101] bg-white/80 backdrop-blur-xl border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <button
+          <motion.button
             onClick={onLogoClick}
             className="text-2xl font-bold tracking-tight text-black hover:text-gray-600 transition-colors"
+            initial={{ x: -50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
           >
             AudioA
-          </button>
+          </motion.button>
 
           <nav className="hidden md:flex gap-1 items-center">
             {navLinks.map((link) => (
@@ -48,7 +61,7 @@ export function HeaderPro({ cartCount, onCartClick, onLogoClick, animated = fals
                 key={link.href}
                 onClick={(e) => {
                   e.preventDefault();
-                  handleNavClick(link.href);
+                  handleNavClick(link.href, link.action);
                 }}
                 href={link.href}
                 className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-black rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
@@ -58,9 +71,11 @@ export function HeaderPro({ cartCount, onCartClick, onLogoClick, animated = fals
             ))}
           </nav>
 
-          <button
+          <motion.button
             onClick={onCartClick}
             className="relative p-2.5 hover:bg-gray-100 rounded-lg transition-colors"
+            animate={cartBounce ? { scale: [1, 1.2, 1] } : {}}
+            transition={{ duration: 0.4, ease: "easeOut" }}
           >
             <ShoppingCart className="w-6 h-6 text-black" />
             {cartCount > 0 && (
@@ -68,7 +83,7 @@ export function HeaderPro({ cartCount, onCartClick, onLogoClick, animated = fals
                 {cartCount}
               </span>
             )}
-          </button>
+          </motion.button>
 
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -90,7 +105,7 @@ export function HeaderPro({ cartCount, onCartClick, onLogoClick, animated = fals
                   key={link.href}
                   onClick={(e) => {
                     e.preventDefault();
-                    handleNavClick(link.href);
+                    handleNavClick(link.href, link.action);
                   }}
                   href={link.href}
                   className="block px-4 py-2 text-sm font-medium text-gray-700 hover:text-black rounded-lg hover:bg-gray-100 transition-colors"
@@ -107,7 +122,7 @@ export function HeaderPro({ cartCount, onCartClick, onLogoClick, animated = fals
 
   // A verzió (no animation)
   return (
-    <header className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100">
+    <header className="fixed top-0 w-full z-[101] bg-white/80 backdrop-blur-xl border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         <button
           onClick={onLogoClick}
@@ -122,7 +137,7 @@ export function HeaderPro({ cartCount, onCartClick, onLogoClick, animated = fals
               key={link.href}
               onClick={(e) => {
                 e.preventDefault();
-                handleNavClick(link.href);
+                handleNavClick(link.href, link.action);
               }}
               href={link.href}
               className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-black rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
@@ -164,7 +179,7 @@ export function HeaderPro({ cartCount, onCartClick, onLogoClick, animated = fals
                 key={link.href}
                 onClick={(e) => {
                   e.preventDefault();
-                  handleNavClick(link.href);
+                  handleNavClick(link.href, link.action);
                 }}
                 href={link.href}
                 className="block px-4 py-2 text-sm font-medium text-gray-700 hover:text-black rounded-lg hover:bg-gray-100 transition-colors"

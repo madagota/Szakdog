@@ -1,7 +1,7 @@
 import ImageWithFallback from './components/figma/ImageWithFallback';
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { X, Check } from 'lucide-react';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import ProductDetailsAnimated from './components/ProductDetailsAnimated';
 import { Checkout } from './components/Checkout';
 import { SkeletonLoader } from './components/SkeletonLoader';
@@ -36,6 +36,8 @@ export default function AppB() {
   const [cartOpen, setCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [showWelcome, setShowWelcome] = useState(true);
+  const [cartBounce, setCartBounce] = useState(false);
+  const [addToCartSuccess, setAddToCartSuccess] = useState<{ [key: number]: boolean }>({});
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 600);
@@ -66,6 +68,14 @@ export default function AppB() {
       return [...prev, { id, name, price, quantity: 1 }];
     });
     setCartOpen(true);
+    
+    // Cart icon bounce animáció
+    setCartBounce(true);
+    setTimeout(() => setCartBounce(false), 400);
+    
+    // Add to cart success animáció
+    setAddToCartSuccess(prev => ({ ...prev, [id]: true }));
+    setTimeout(() => setAddToCartSuccess(prev => ({ ...prev, [id]: false })), 1200);
   };
 
   const removeFromCart = (id: number) => setCartItems(prev => prev.filter(item => item.id !== id));
@@ -100,27 +110,110 @@ export default function AppB() {
 
   if (currentPage === 'product' && selectedProduct) {
     return (
-      <ProductDetailsAnimated
-        product={selectedProduct}
-        onBack={() => setCurrentPage('home')}
-        onAddToCart={addToCart}
-        onBuyNow={(id, name, price) => {
-          addToCart(id, name, price);
-          setTimeout(() => { setCurrentPage('checkout'); window.scrollTo(0, 0); }, 300);
-        }}
-      />
+      <>
+        {loading && <SkeletonLoader />}
+        <div className="min-h-screen bg-white">
+          {showWelcome && (
+            <div className="fixed inset-0 z-[100] bg-black bg-opacity-80 flex items-center justify-center p-4">
+              <div className="bg-white rounded-[32px] border border-black/10 p-8 max-w-lg text-center shadow-2xl shadow-black/10">
+                <div className="mx-auto mb-6 w-20 h-20 rounded-3xl bg-black text-white flex items-center justify-center text-3xl font-bold">
+                  B
+                </div>
+                <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-black">Üdvözöllek a kutatásomban!</h2>
+                <p className="text-gray-700 mb-6 text-base sm:text-lg leading-7">
+                  Ez a weboldal egy szakdolgozat kutatás része. A feladatod nagyon egyszerű:
+                  <br/><br/>
+                  <strong className="text-black text-lg sm:text-xl">Nézz körül, és &quot;rendelj meg&quot; egy fejhallgatót!</strong>
+                  <br/><br/>
+                  A fizetésnél nyugodtan adj meg kamu adatokat, ez csak egy szimuláció. A rendelés végén egy rövid kérdőív vár rád.
+                </p>
+                <button
+                  onClick={() => setShowWelcome(false)}
+                  className="w-full bg-black text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-900 transition-colors"
+                >
+                  Értettem, kezdjük a tesztet!
+                </button>
+              </div>
+            </div>
+          )}
+
+          {!showWelcome && (
+            <HeaderPro
+              cartCount={cartCount}
+              onCartClick={() => setCartOpen(true)}
+              onLogoClick={() => setCurrentPage('home')}
+              animated={true}
+              onFeaturesClick={() => viewProductDetails(products[0])}
+              currentPage={currentPage}
+              cartBounce={cartBounce}
+            />
+          )}
+
+          <ProductDetailsAnimated
+            product={selectedProduct}
+            onBack={() => setCurrentPage('home')}
+            onAddToCart={addToCart}
+            onBuyNow={(id, name, price) => {
+              addToCart(id, name, price);
+              setTimeout(() => { setCurrentPage('checkout'); window.scrollTo(0, 0); }, 300);
+            }}
+          />
+          <FooterPro />
+        </div>
+      </>
     );
   }
 
   if (currentPage === 'checkout') {
     return (
-      <Checkout
-        cartItems={cartItems}
-        cartTotal={cartTotal}
-        onBack={() => { setCurrentPage('home'); setCartOpen(true); }}
-        onComplete={handleCheckoutComplete}
-        animated={true}
-      />
+      <>
+        {loading && <SkeletonLoader />}
+        <div className="min-h-screen bg-white">
+          {showWelcome && (
+            <div className="fixed inset-0 z-[100] bg-black bg-opacity-80 flex items-center justify-center p-4">
+              <div className="bg-white rounded-[32px] border border-black/10 p-8 max-w-lg text-center shadow-2xl shadow-black/10">
+                <div className="mx-auto mb-6 w-20 h-20 rounded-3xl bg-black text-white flex items-center justify-center text-3xl font-bold">
+                  B
+                </div>
+                <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-black">Üdvözöllek a kutatásomban!</h2>
+                <p className="text-gray-700 mb-6 text-base sm:text-lg leading-7">
+                  Ez a weboldal egy szakdolgozat kutatás része. A feladatod nagyon egyszerű:
+                  <br/><br/>
+                  <strong className="text-black text-lg sm:text-xl">Nézz körül, és &quot;rendelj meg&quot; egy fejhallgatót!</strong>
+                  <br/><br/>
+                  A fizetésnél adj meg kamu adatokat, ez csak egy szimuláció. A rendelés végén egy rövid kérdőív vár rád.
+                </p>
+                <button
+                  onClick={() => setShowWelcome(false)}
+                  className="w-full bg-black text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-900 transition-colors"
+                >
+                  Kezdés!
+                </button>
+              </div>
+            </div>
+          )}
+
+          {!showWelcome && (
+            <HeaderPro
+              cartCount={cartCount}
+              onCartClick={() => setCartOpen(true)}
+              onLogoClick={() => setCurrentPage('home')}
+              animated={true}
+              onFeaturesClick={() => viewProductDetails(products[0])}
+              currentPage={currentPage}
+            />
+          )}
+
+          <Checkout
+            cartItems={cartItems}
+            cartTotal={cartTotal}
+            onBack={() => { setCurrentPage('home'); setCartOpen(true); }}
+            onComplete={handleCheckoutComplete}
+            animated={true}
+          />
+          <FooterPro />
+        </div>
+      </>
     );
   }
 
@@ -152,13 +245,15 @@ export default function AppB() {
           </div>
         )}
 
-        <HeaderPro
-          cartCount={cartCount}
-          onCartClick={() => setCartOpen(true)}
-          onLogoClick={() => setCurrentPage('home')}
-          animated={true}
-          onFeaturesClick={() => viewProductDetails(products[0])}
-        />
+        {!showWelcome && (
+          <HeaderPro
+            cartCount={cartCount}
+            onCartClick={() => setCartOpen(true)}
+            onLogoClick={() => setCurrentPage('home')}
+            animated={true}
+            onFeaturesClick={() => viewProductDetails(products[0])}
+            currentPage={currentPage}            cartBounce={cartBounce}          />
+        )}
 
         <div className="pt-20">
           <AnimatePresence>
@@ -344,6 +439,49 @@ export default function AppB() {
             </div>
           </section>
 
+{/* Features szekció */}
+<section id="features" className="bg-gray-50 py-12 sm:py-16 md:py-20">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <motion.h2 
+      className="text-3xl sm:text-4xl text-center mb-10 sm:mb-16"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6 }}
+    >
+      Miért válassza az AudioA-t?
+    </motion.h2>
+    <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
+      {[
+        { title: "Kiváló hangzás", description: "Tapasztalja meg a stúdió minőségű hangzást mély basszussal és kristálytiszta magasakkal." },
+        { title: "Egész napos kényelem", description: "Ergonomikus kialakítás prémium párnázással a hosszú zenehallgatáshoz." },
+        { title: "Hosszú üzemidő", description: "Akár 40 óra vezeték nélküli lejátszás egyetlen töltéssel." }
+      ].map((feature, index) => (
+        <motion.div
+          key={index}
+          className="text-center group cursor-pointer"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: index * 0.1 }}
+          whileHover={{ y: -10 }}
+        >
+          <motion.div 
+            className="w-14 h-14 sm:w-16 sm:h-16 bg-black rounded-full mx-auto mb-3 sm:mb-4 flex items-center justify-center"
+            whileHover={{ scale: 1.1, rotate: 360 }}
+            transition={{ duration: 0.6 }}
+          >
+            <motion.div className="w-7 h-7 sm:w-8 sm:h-8 bg-white rounded-full" whileHover={{ scale: 0.8 }} />
+          </motion.div>
+          <h3 className="text-lg sm:text-xl mb-2 sm:mb-3">{feature.title}</h3>
+          <p className="text-sm sm:text-base text-gray-600 group-hover:text-gray-900 transition-colors">
+            {feature.description}
+          </p>
+        </motion.div>
+      ))}
+    </div>
+  </div>
+</section>
           {/* Termékek szekció */}
           <section id="products" className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-20">
             <motion.h2
