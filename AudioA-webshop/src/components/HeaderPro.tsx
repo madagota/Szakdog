@@ -6,9 +6,10 @@ interface HeaderProProps {
   onCartClick: () => void;
   onLogoClick: () => void;
   animated?: boolean;
+  onFeaturesClick?: () => void;
 }
 
-export function HeaderPro({ cartCount, onCartClick, onLogoClick, animated = false }: HeaderProProps) {
+export function HeaderPro({ cartCount, onCartClick, onLogoClick, animated = false, onFeaturesClick }: HeaderProProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navLinks = [
@@ -19,9 +20,13 @@ export function HeaderPro({ cartCount, onCartClick, onLogoClick, animated = fals
 
   const handleNavClick = (href: string) => {
     setIsMobileMenuOpen(false);
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    if (href === '#features' && onFeaturesClick) {
+      onFeaturesClick();
+    } else {
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 

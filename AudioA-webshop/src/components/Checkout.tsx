@@ -1,5 +1,6 @@
 import { ArrowLeft, Check, CreditCard, Lock } from 'lucide-react';
 import { useState } from 'react';
+import { HeadphoneCableProgress } from './HeadphoneCableProgress';
 
 interface CartItem {
   id: number;
@@ -13,9 +14,10 @@ interface CheckoutProps {
   cartTotal: number;
   onBack: () => void;
   onComplete: () => void;
+  animated?: boolean;
 }
 
-export function Checkout({ cartItems, cartTotal, onBack, onComplete }: CheckoutProps) {
+export function Checkout({ cartItems, cartTotal, onBack, onComplete, animated = false }: CheckoutProps) {
   const [step, setStep] = useState<'shipping' | 'payment' | 'complete'>('shipping');
   const [formData, setFormData] = useState({
     email: '',
@@ -69,29 +71,32 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete }: CheckoutP
     setStep('complete');
   };
 
+  const surveyLink = animated
+    ? 'https://docs.google.com/forms/d/e/1FAIpQLSczKAC17GkbSNjcxGOudJq5N5QIYj-renC1ihVkzXr77qdaYw/viewform?usp=pp_url&entry.1582522446=B_verzio'
+    : 'https://docs.google.com/forms/d/e/1FAIpQLSczKAC17GkbSNjcxGOudJq5N5QIYj-renC1ihVkzXr77qdaYw/viewform?usp=pp_url&entry.1582522446=A+_verzio';
+
   if (step === 'complete') {
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6 py-12">
-        <div className="max-w-md w-full text-center bg-gray-50 p-8 rounded-2xl border border-gray-200 shadow-sm">
-          <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-8">
-            <Check className="w-10 h-10 text-white" />
+        <div className="max-w-md w-full text-center bg-black text-white p-8 rounded-[32px] border border-black shadow-2xl shadow-black/10">
+          <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full bg-white text-black text-4xl font-bold shadow-lg">
+            ✓
           </div>
           <h2 className="text-4xl mb-4 font-bold">Rendelés sikeres!</h2>
-          <p className="text-gray-600 mb-8 text-lg">
-            A feladat kész! Most még csak egy lépés maradt hátra!
+          <p className="text-gray-200 mb-8 text-lg leading-8">
+            A feladat kész! Most még csak egy lépés maradt hátra: töltsd ki a kérdőívet.
           </p>
           
-          <div className="bg-white p-6 rounded-xl border border-blue-100 shadow-md mb-8">
-            <h3 className="font-bold text-xl mb-3 text-blue-900">Kérlek, töltsd ki a kérdőívet!</h3>
-            <p className="text-gray-500 mb-6 text-sm">
-              Ez maximum 2 percet vesz igénybe, de a dolgozatomhoz elengedhetetlenül fontos, hogy megtudjam, milyen volt a weboldal használata.
+          <div className="bg-white text-black p-6 rounded-3xl border border-black/10 shadow-md mb-8">
+            <h3 className="font-bold text-2xl mb-3">Kérlek, töltsd ki a kérdőívet!</h3>
+            <p className="text-gray-600 mb-6 text-sm leading-6">
+              Ez maximum 2 percet vesz igénybe, de a szakdolgozatomhoz elengedhetetlen, hogy megtudjam, milyen volt a weboldal használata.
             </p>
-            {/* IDE MAJD A GOOGLE FORMS LINKEDET KELL BEILLESZTENI A "#" HELYÉRE */}
             <a 
-              href="https://docs.google.com/forms/d/e/1FAIpQLSczKAC17GkbSNjcxGOudJq5N5QIYj-renC1ihVkzXr77qdaYw/viewform?usp=pp_url&entry.1582522446=A+_verzio" 
+              href={surveyLink}
               target="_blank" 
               rel="noopener noreferrer" 
-              className="block w-full bg-blue-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition-colors shadow-lg"
+              className="block w-full bg-black text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-900 transition-colors shadow-lg"
             >
               Kérdőív megnyitása
             </a>
@@ -99,7 +104,7 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete }: CheckoutP
 
           <button
             onClick={onComplete}
-            className="text-gray-400 hover:text-black font-bold text-sm"
+            className="text-gray-300 hover:text-white font-bold text-sm"
           >
             Vissza a webshop kezdőlapjára
           </button>
@@ -122,14 +127,18 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete }: CheckoutP
 
       <div className="max-w-7xl mx-auto px-6 py-12">
         
-        {/* Egyszerűsített folyamatjelző */}
-        <div className="flex justify-center mb-12">
-           <div className="flex items-center gap-4 text-sm font-bold">
+        {/* Folyamatjelző */}
+        {animated ? (
+          <HeadphoneCableProgress step={step} />
+        ) : (
+          <div className="flex justify-center mb-12">
+            <div className="flex items-center gap-4 text-sm font-bold">
               <span className={step === 'shipping' ? "text-black border-b-2 border-black pb-1" : "text-gray-400"}>1. Szállítási adatok</span>
               <span className="text-gray-300">/</span>
               <span className={step === 'payment' ? "text-black border-b-2 border-black pb-1" : "text-gray-400"}>2. Fizetés</span>
-           </div>
-        </div>
+            </div>
+          </div>
+        )}
 
         <div className="grid lg:grid-cols-2 gap-16">
           {/* Bal oszlop - Űrlap */}
@@ -218,7 +227,7 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete }: CheckoutP
                     Vissza
                   </button>
                   <button type="submit" className="flex-1 bg-black text-white py-4 rounded-xl font-bold hover:bg-gray-800">
-                    Fizetés ${cartTotal}
+                    Fizetés RON {cartTotal}
                   </button>
                 </div>
               </form>
@@ -237,7 +246,7 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete }: CheckoutP
                       <p className="font-bold">{item.name}</p>
                       <p className="text-sm text-gray-600">Mennyiség: {item.quantity}</p>
                     </div>
-                    <p className="font-bold">${item.price * item.quantity}</p>
+                    <p className="font-bold">RON {item.price * item.quantity}</p>
                   </div>
                 ))}
               </div>
@@ -245,7 +254,7 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete }: CheckoutP
               <div className="border-t border-gray-200 pt-6 space-y-3">
                 <div className="flex justify-between text-gray-600">
                   <span>Részösszeg</span>
-                  <span>${cartTotal}</span>
+                  <span>RON {cartTotal}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Szállítás</span>
@@ -253,11 +262,11 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete }: CheckoutP
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Adó (10%)</span>
-                  <span>${(cartTotal * 0.1).toFixed(2)}</span>
+                  <span>RON {(cartTotal * 0.1).toFixed(2)}</span>
                 </div>
                 <div className="border-t border-gray-200 pt-3 flex justify-between text-xl font-bold">
                   <span>Végösszeg</span>
-                  <span>${(cartTotal * 1.1).toFixed(2)}</span>
+                  <span>RON {(cartTotal * 1.1).toFixed(2)}</span>
                 </div>
               </div>
 

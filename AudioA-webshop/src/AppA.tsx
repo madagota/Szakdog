@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
-import ProductDetails from './components/ProductDetails';
+import ProductDetailsStatic from './components/ProductDetailsStatic';
 import { Checkout } from './components/Checkout';
 import { HeaderPro } from './components/HeaderPro';
 import { FooterPro } from './components/FooterPro';
 import ReactGA from "react-ga4";
-import ImageWithFallback from './components/figma/ImageWithFallback';
+//import ImageWithFallback from './components/figma/ImageWithFallback';
 
 // Image URLs from public assets
-const proImage = '/assets/adrian-regeci-rlJngr1ReOw-unsplash.jpg';
-const studioImage = '/assets/sound-tools-NOCwdxBRGJA-unsplash.jpg';
-const landingImage = '/assets/sound-tools-Q-J34Sj65FQ-unsplash.jpg';
+import proImage from './assets/pexels-caleboquendo-7772547.jpg';
+import studioImage from './assets/sound-tools-NOCwdxBRGJA-unsplash.jpg';
+import landingImage from './assets/sound-tools-Q-J34Sj65FQ-unsplash.jpg';
 interface Product {
   id: number;
   name: string;
@@ -37,14 +37,14 @@ export default function App() {
       id: 1,
       name: "AudioA Pro",
       description: "Prémium vezeték nélküli fejhallgató aktív zajszűréssel",
-      price: 299,
+      price: 799,
       image: proImage
     },
     {
       id: 2,
       name: "AudioA Studio",
       description: "Professzionális stúdió monitor zenei produkciókhoz",
-      price: 399,
+      price: 1099,
       image: studioImage
     }
   ];
@@ -118,7 +118,7 @@ export default function App() {
 
   if (currentPage === 'product' && selectedProduct) {
     return (
-      <ProductDetails
+      <ProductDetailsStatic
         product={selectedProduct}
         onBack={() => setCurrentPage('home')}
         onAddToCart={addToCart}
@@ -136,6 +136,7 @@ export default function App() {
           setCartOpen(true);
         }}
         onComplete={handleCheckoutComplete}
+        animated={false}
       />
     );
   }
@@ -147,18 +148,21 @@ export default function App() {
       {/* --- FELUGRÓ ÜDVÖZLŐ ABLAK --- */}
       {showWelcome && (
         <div className="fixed inset-0 z-[100] bg-black bg-opacity-80 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-8 max-w-lg text-center shadow-2xl">
-            <h2 className="text-3xl font-bold mb-4">Üdvözöllek a kutatásomban!</h2>
-            <p className="text-gray-600 mb-6 text-lg">
-              Ez a weboldal egy szakdolgozat kutatás része. A feladatod nagyon egyszerű: 
+          <div className="bg-white rounded-[32px] border border-black/10 p-8 max-w-lg text-center shadow-2xl shadow-black/10">
+            <div className="mx-auto mb-6 w-20 h-20 rounded-3xl bg-black text-white flex items-center justify-center text-3xl font-bold">
+              A
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-black">Üdvözöllek a kutatásomban!</h2>
+            <p className="text-gray-700 mb-6 text-base sm:text-lg leading-7">
+              Ez a weboldal egy szakdolgozat kutatás része. A feladatod nagyon egyszerű:
               <br/><br/>
-              <strong className="text-black text-xl">Nézz körül, és "rendelj meg" egy fejhallgatót!</strong>
+              <strong className="text-black text-lg sm:text-xl">Nézz körül, és &quot;rendelj meg&quot; egy fejhallgatót!</strong>
               <br/><br/>
-              A fizetésnél nyugodtan adj meg kamu adatokat, ez csak egy szimuláció. A rendelés végén egy nagyon rövid kérdőív vár rád. Köszönöm a segítséged!
+              A fizetésnél nyugodtan adj meg kamu adatokat, ez csak egy szimuláció. A rendelés végén egy rövid kérdőív vár rád.
             </p>
             <button 
               onClick={() => setShowWelcome(false)} 
-              className="w-full bg-blue-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition-colors"
+              className="w-full bg-black text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-900 transition-colors"
             >
               Értettem, kezdjük a tesztet!
             </button>
@@ -210,7 +214,7 @@ export default function App() {
                           <span className="font-bold w-4 text-center">{item.quantity}</span>
                           <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-7 h-7 sm:w-8 sm:h-8 border border-gray-300 rounded bg-gray-100 hover:bg-gray-200 font-bold text-sm sm:text-base">+</button>
                         </div>
-                        <p className="font-bold">${item.price * item.quantity}</p>
+                        <p className="font-bold">RON {item.price * item.quantity}</p>
                       </div>
                     </div>
                   ))}
@@ -222,7 +226,7 @@ export default function App() {
               <div className="border-t border-gray-200 p-6 bg-gray-50">
                 <div className="flex justify-between mb-4 font-bold text-xl">
                   <span>Összesen:</span>
-                  <span>${cartTotal}</span>
+                  <span>RON {cartTotal}</span>
                 </div>
                 <button 
                   className="w-full bg-black text-white py-3 rounded font-bold hover:bg-gray-800"
@@ -270,12 +274,13 @@ export default function App() {
               <img 
                 src={product.image}
                 alt={product.name}
-               className="w-full h-64 sm:h-80 object-cover"
+              // className="w-full h-64 sm:h-80 object-cover"
+              className="w-full object-cover" style={{minHeight: '300px'}}
               />
               <div className="p-6 flex flex-col flex-1">
                 <h3 className="text-2xl font-bold mb-2">{product.name}</h3>
                 <p className="text-gray-600 mb-4">{product.description}</p>
-                <p className="text-xl font-bold mb-6 mt-auto">${product.price}</p>
+                <p className="text-xl font-bold mb-6 mt-auto">RON {product.price}</p>
                 <div className="flex flex-col sm:flex-row gap-3 mt-auto">
                   <button 
                     className="flex-1 border-2 border-black text-black font-bold py-3 rounded hover:bg-gray-100"
@@ -337,10 +342,10 @@ export default function App() {
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h2 className="text-4xl font-bold mb-6">Rólunk</h2>
           <p className="text-gray-600 mb-4 text-lg">
-            Az AudioA egy egyszerű küldetéssel indult: hogy kivételes hangélményt nyújtson mindenkinek, aki szereti a zenét. Hiszünk abban, hogy a nagyszerű hangzás nem lehet luxus.
+            Az AudioA-t egy egyszerű küldetéssel alapítottuk: kivételes hangélményt nyújtani minden zene szerelmese számára. Hiszünk abban, hogy a kiváló hangzás nem lehet luxus.
           </p>
           <p className="text-gray-600 text-lg">
-            Hangmérnökeinkből és tervezőinkből álló csapatunk fáradhatatlanul dolgozik azon, hogy olyan fejhallgatókat alkosson, amelyek ötvözik a legmodernebb technológiát az időtlen dizájnnal.
+            Hangmérnökökből és tervezőkből álló csapatunk fáradhatatlanul dolgozik azon, hogy olyan fejhallgatókat hozzon létre, amelyek a legmodernebb technológiát ötvözik az időtálló dizájnnal.
           </p>
         </div>
       </section>

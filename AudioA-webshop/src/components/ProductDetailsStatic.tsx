@@ -1,5 +1,4 @@
 import { ArrowLeft, Check, ChevronLeft, ChevronRight, Star, ShoppingCart, Zap } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 import proSlide1 from '../assets/pexels-caleboquendo-7772549.jpg';
@@ -13,17 +12,6 @@ import studioSlide3 from '../assets/sound-tools-NOCwdxBRGJA-unsplash.jpg';
 import studioSlide4 from '../assets/sound-tools-o64nE3PW2cE-unsplash.jpg';
 import studioSlide5 from '../assets/sound-tools-Q-J34Sj65FQ-unsplash.jpg';
 
-// AnimatedElement wrapper component
-const AnimatedElement = ({ as = 'div', animated, ...props }: any) => {
-  if (animated) {
-    const MotionComponent = (motion as any)[as] || motion.div;
-    return <MotionComponent {...props} />;
-  } else {
-    const Component = as;
-    return <Component {...props} />;
-  }
-};
-
 interface ProductDetailsProps {
   product: {
     id: number;
@@ -35,12 +23,9 @@ interface ProductDetailsProps {
   onBack: () => void;
   onAddToCart: (id: number, name: string, price: number) => void;
   onBuyNow?: (id: number, name: string, price: number) => void;
-  animated?: boolean;
 }
 
-export default function ProductDetails({ product, onBack, onAddToCart, onBuyNow, animated = false }: ProductDetailsProps) {
-  const [hoveredFeature, setHoveredFeature] = useState<number | null>(null);
-  const [showRating, setShowRating] = useState(false);
+export default function ProductDetailsStatic({ product, onBack, onAddToCart, onBuyNow }: ProductDetailsProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const proImages = [
@@ -144,36 +129,24 @@ export default function ProductDetails({ product, onBack, onAddToCart, onBuyNow,
     <div className="min-h-screen bg-white overflow-hidden">
       {/* Navigáció */}
       <div className="max-w-7xl mx-auto px-6 py-6 sticky top-0 z-10 bg-white bg-opacity-95 backdrop-blur-sm">
-        <AnimatedElement
-          as="button"
-          animated={animated}
+        <button
           onClick={onBack}
           className="flex items-center gap-2 text-gray-600 hover:text-black font-bold transition-colors"
-          whileHover={animated ? { x: -4 } : undefined}
-          whileTap={animated ? { scale: 0.95 } : undefined}
         >
           <ArrowLeft className="w-5 h-5" />
           Vissza
-        </AnimatedElement>
+        </button>
       </div>
 
       {/* Hero Szekció */}
       <section className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <AnimatedElement
-            as="div"
-            animated={animated}
-            initial={animated ? { opacity: 0, x: -50 } : undefined}
-            animate={animated ? { opacity: 1, x: 0 } : undefined}
-            transition={animated ? { duration: 0.6 } : undefined}
-            whileHover={animated ? { scale: 1.02 } : undefined}
-            className="transition-transform duration-300"
-          >
+          <div className="transition-transform duration-300">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-gray-100">
               <img
                 src={currentImage}
                 alt={`${product.name} kép ${currentImageIndex + 1}`}
-                className="w-full h-[520px] sm:h-[560px] object-cover"
+                className="w-full h-[520px] sm:h-[560px] object-contain"
               />
 
               <button
@@ -205,136 +178,66 @@ export default function ProductDetails({ product, onBack, onAddToCart, onBuyNow,
                 ))}
               </div>
             </div>
-          </AnimatedElement>
+          </div>
 
-          <AnimatedElement
-            as="div"
-            animated={animated}
-            initial={animated ? { opacity: 0, x: 50 } : undefined}
-            animate={animated ? { opacity: 1, x: 0 } : undefined}
-            transition={animated ? { duration: 0.6, delay: 0.1 } : undefined}
-          >
-            <AnimatedElement
-              as="h1"
-              animated={animated}
-              initial={animated ? { opacity: 0, y: 20 } : undefined}
-              animate={animated ? { opacity: 1, y: 0 } : undefined}
-              transition={animated ? { duration: 0.6, delay: 0.2 } : undefined}
-              className="text-5xl font-bold mb-4"
-            >
+          <div>
+            <h1 className="text-5xl font-bold mb-4">
               {product.name}
-            </AnimatedElement>
-            <AnimatedElement
-              as="p"
-              animated={animated}
-              initial={animated ? { opacity: 0, y: 20 } : undefined}
-              animate={animated ? { opacity: 1, y: 0 } : undefined}
-              transition={animated ? { duration: 0.6, delay: 0.3 } : undefined}
-              className="text-2xl text-gray-600 mb-8"
-            >
+            </h1>
+            <p className="text-2xl text-gray-600 mb-8">
               {product.description}
-            </AnimatedElement>
+            </p>
             
-            <AnimatedElement
-              as="div"
-              animated={animated}
-              initial={animated ? { opacity: 0, y: 20 } : undefined}
-              animate={animated ? { opacity: 1, y: 0 } : undefined}
-              transition={animated ? { duration: 0.6, delay: 0.4 } : undefined}
-              className="mb-8"
-            >
+            <div className="mb-8">
               <div className="flex items-baseline gap-2 mb-4">
                 <p className="text-4xl font-bold">RON {product.price}</p>
                 <p className="text-lg text-gray-500 line-through">RON {Math.round(product.price * 1.2)}</p>
                 <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-bold">-17%</span>
               </div>
               <p className="text-gray-500 text-sm">✓ Ingyenes szállítás | 30 napos visszavásárlás | 2 év garancia</p>
-            </AnimatedElement>
+            </div>
 
-            <AnimatedElement
-              as="div"
-              animated={animated}
-              initial={animated ? { opacity: 0, y: 20 } : undefined}
-              animate={animated ? { opacity: 1, y: 0 } : undefined}
-              transition={animated ? { duration: 0.6, delay: 0.5 } : undefined}
-              className="space-y-3"
-            >
-              <AnimatedElement
-                as="button"
-                animated={animated}
+            <div className="space-y-3">
+              <button
                 className="w-full bg-black text-white font-bold py-4 rounded-xl text-lg hover:bg-gray-800 transition-all flex items-center justify-center gap-2 group relative overflow-hidden"
                 onClick={() => onBuyNow ? onBuyNow(product.id, product.name, product.price) : onAddToCart(product.id, product.name, product.price)}
-                whileHover={animated ? { scale: 1.02 } : undefined}
-                whileTap={animated ? { scale: 0.98 } : undefined}
               >
                 <Zap className="w-5 h-5 group-hover:animate-pulse" />
                 <span className="relative z-10">Vásárlás most</span>
-                <motion.div className="absolute inset-0 bg-gray-700" initial={{ x: '-100%' }} whileHover={{ x: 0 }} transition={{ type: 'tween', duration: 0.3 }} />
-              </AnimatedElement>
+                <div className="absolute inset-0 bg-gray-700" />
+              </button>
 
-              <AnimatedElement
-                as="button"
-                animated={animated}
+              <button
                 className="w-full border-2 border-black text-black font-bold py-3 rounded-xl text-lg hover:bg-gray-50 transition-all flex items-center justify-center gap-2"
                 onClick={() => onAddToCart(product.id, product.name, product.price)}
-                whileHover={animated ? { scale: 1.02 } : undefined}
-                whileTap={animated ? { scale: 0.98 } : undefined}
               >
                 <ShoppingCart className="w-5 h-5" />
                 Kosárba
-              </AnimatedElement>
-            </AnimatedElement>
-          </AnimatedElement>
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Jellemzők Szekció */}
       <section className="bg-gradient-to-b from-gray-50 to-white py-20 mt-20">
         <div className="max-w-7xl mx-auto px-6">
-          <AnimatedElement
-            as="h2"
-            animated={animated}
-            className="text-4xl text-center font-bold mb-16"
-            initial={animated ? { opacity: 0, y: 20 } : undefined}
-            whileInView={animated ? { opacity: 1, y: 0 } : undefined}
-            viewport={animated ? { once: true } : undefined}
-            transition={animated ? { duration: 0.6 } : undefined}
-          >
+          <h2 className="text-4xl text-center font-bold mb-16">
             A doboz tartalma és jellemzők
-          </AnimatedElement>
+          </h2>
           <div className="grid md:grid-cols-2 gap-6">
             {features.map((feature, index) => (
-              <AnimatedElement
-                as="div"
-                animated={animated}
+              <div
                 key={index}
                 className="flex items-start gap-4 bg-white p-6 rounded-xl border border-gray-100 hover:border-black hover:shadow-lg transition-all cursor-default"
-                initial={animated ? { opacity: 0, y: 20 } : undefined}
-                whileInView={animated ? { opacity: 1, y: 0 } : undefined}
-                viewport={animated ? { once: true } : undefined}
-                transition={animated ? { duration: 0.4, delay: index * 0.05 } : undefined}
-                onMouseEnter={animated ? () => setHoveredFeature(index) : undefined}
-                onMouseLeave={animated ? () => setHoveredFeature(-1) : undefined}
               >
-                <AnimatedElement
-                  as="div"
-                  animated={animated}
-                  className="w-6 h-6 bg-black rounded-full flex items-center justify-center flex-shrink-0 mt-1"
-                  animate={animated ? { scale: hoveredFeature === index ? 1.2 : 1 } : undefined}
-                  transition={animated ? { type: 'spring', stiffness: 300 } : undefined}
-                >
+                <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                   <Check className="w-4 h-4 text-white" />
-                </AnimatedElement>
-                <AnimatedElement
-                  as="p"
-                  animated={animated}
-                  className="text-gray-700 font-medium"
-                  animate={animated ? { x: hoveredFeature === index ? 4 : 0 } : undefined}
-                  transition={animated ? { type: 'spring', stiffness: 300 } : undefined}
-                >
+                </div>
+                <p className="text-gray-700 font-medium">
                   {feature}
-                </AnimatedElement>
-              </AnimatedElement>
+                </p>
+              </div>
             ))}
           </div>
         </div>
@@ -343,40 +246,20 @@ export default function ProductDetails({ product, onBack, onAddToCart, onBuyNow,
       {/* Technikai adatok */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-6">
-          <AnimatedElement
-            as="h2"
-            animated={animated}
-            className="text-4xl text-center font-bold mb-16"
-            initial={animated ? { opacity: 0, y: 20 } : undefined}
-            whileInView={animated ? { opacity: 1, y: 0 } : undefined}
-            viewport={animated ? { once: true } : undefined}
-            transition={animated ? { duration: 0.6 } : undefined}
-          >
+          <h2 className="text-4xl text-center font-bold mb-16">
             Műszaki adatok
-          </AnimatedElement>
+          </h2>
           <div className="max-w-3xl mx-auto">
             {specs.map((spec, index) => (
-              <AnimatedElement
-                as="div"
-                animated={animated}
+              <div
                 key={index}
                 className="border-b border-gray-200 py-6 flex justify-between items-center px-4 rounded transition-all hover:bg-gray-50"
-                initial={animated ? { opacity: 0, x: -20 } : undefined}
-                whileInView={animated ? { opacity: 1, x: 0 } : undefined}
-                viewport={animated ? { once: true } : undefined}
-                transition={animated ? { duration: 0.4, delay: index * 0.03 } : undefined}
-                whileHover={animated ? { paddingLeft: 20 } : undefined}
               >
                 <span className="text-gray-600 font-medium">{spec.label}</span>
-                <AnimatedElement
-                  as="span"
-                  animated={animated}
-                  className="font-bold"
-                  whileHover={animated ? { scale: 1.1, color: '#000' } : undefined}
-                >
+                <span className="font-bold">
                   {spec.value}
-                </AnimatedElement>
-              </AnimatedElement>
+                </span>
+              </div>
             ))}
           </div>
         </div>
@@ -386,31 +269,13 @@ export default function ProductDetails({ product, onBack, onAddToCart, onBuyNow,
       <section className="bg-gradient-to-b from-white to-gray-50 py-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
-            <motion.h2 
-              className="text-4xl font-bold mb-4"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <h2 className="text-4xl font-bold mb-4">
               Vásárlói értékelések
-            </motion.h2>
-            <motion.div 
-              className="flex items-center justify-center gap-2 mb-2"
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              onMouseEnter={() => setShowRating(true)}
-              onMouseLeave={() => setShowRating(false)}
-            >
+            </h2>
+            <div className="flex items-center justify-center gap-2 mb-2">
               <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <motion.div 
-                    key={star}
-                    animate={{ scale: showRating ? 1.1 : 1 }}
-                    transition={{ type: 'spring', stiffness: 300 }}
-                  >
+                  <div key={star}>
                     <Star
                       className={`w-6 h-6 ${
                         star <= Math.round(averageRating)
@@ -418,45 +283,32 @@ export default function ProductDetails({ product, onBack, onAddToCart, onBuyNow,
                           : "text-gray-300"
                       }`}
                     />
-                  </motion.div>
+                  </div>
                 ))}
               </div>
               <span className="text-xl font-bold">{averageRating.toFixed(1)} / 5</span>
-            </motion.div>
+            </div>
             <p className="text-gray-600">{reviews.length} értékelés alapján</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
-            {reviews.map((review, index) => (
-              <motion.div 
-                key={review.id} 
+            {reviews.map((review) => (
+              <div
+                key={review.id}
                 className="bg-white border border-gray-200 rounded-2xl p-8 hover:border-black hover:shadow-lg transition-all"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                whileHover={{ y: -4 }}
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-4">
-                    <motion.div 
-                      className="w-12 h-12 bg-gradient-to-br from-gray-800 to-gray-900 rounded-full flex items-center justify-center text-white font-bold text-xl"
-                      whileHover={{ scale: 1.1 }}
-                    >
+                    <div className="w-12 h-12 bg-gradient-to-br from-gray-800 to-gray-900 rounded-full flex items-center justify-center text-white font-bold text-xl">
                       {review.name.charAt(0)}
-                    </motion.div>
+                    </div>
                     <div>
                       <div className="flex items-center gap-2">
                         <p className="font-bold">{review.name}</p>
                         {review.verified && (
-                          <motion.div 
-                            className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-bold"
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ type: 'spring', stiffness: 300 }}
-                          >
+                          <div className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-bold">
                             ✓ Igazolt vásárlás
-                          </motion.div>
+                          </div>
                         )}
                       </div>
                       <p className="text-sm text-gray-500">{review.date}</p>
@@ -480,13 +332,10 @@ export default function ProductDetails({ product, onBack, onAddToCart, onBuyNow,
                 <h3 className="text-lg font-bold mb-2">{review.title}</h3>
                 <p className="text-gray-600 leading-relaxed">{review.comment}</p>
 
-                <motion.button 
-                  className="mt-4 text-sm font-bold text-gray-500 hover:text-black transition-colors flex items-center gap-2"
-                  whileHover={{ x: 4 }}
-                >
+                <button className="mt-4 text-sm font-bold text-gray-500 hover:text-black transition-colors flex items-center gap-2">
                   Hasznos volt ez az értékelés? →
-                </motion.button>
-              </motion.div>
+                </button>
+              </div>
             ))}
           </div>
         </div>
@@ -495,38 +344,19 @@ export default function ProductDetails({ product, onBack, onAddToCart, onBuyNow,
       {/* Call to Action */}
       <section className="bg-gradient-to-r from-gray-900 to-black py-20">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <motion.h2 
-            className="text-4xl font-bold mb-6 text-white"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            Tapasztald meg az AudioA minőséget
-          </motion.h2>
-          <motion.p 
-            className="text-xl text-gray-300 mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            Ingyenes szállítás minden rendelésre. 30 napos visszavásárlási garancia.
-          </motion.p>
-          <motion.button
-            className="bg-white text-black font-bold px-12 py-4 rounded-xl text-lg hover:bg-gray-200 transition-all group relative overflow-hidden flex items-center justify-center gap-2 mx-auto"
+          <h2 className="text-4xl font-bold mb-6 text-white">
+            Kész vagy a következő szintre lépni?
+          </h2>
+          <p className="text-xl text-gray-300 mb-8">
+            Csatlakozz a prémium hangzás világához még ma!
+          </p>
+          <button
             onClick={() => onBuyNow ? onBuyNow(product.id, product.name, product.price) : onAddToCart(product.id, product.name, product.price)}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            className="bg-white text-black font-bold py-4 px-12 rounded-xl text-xl hover:bg-gray-100 transition-all flex items-center justify-center gap-3 mx-auto"
           >
-            <ShoppingCart className="w-5 h-5 group-hover:animate-bounce" />
-            Vásárlás most - RON {product.price}
-            <motion.div className="absolute inset-0 bg-gray-300" initial={{ x: '-100%' }} whileHover={{ x: 0 }} transition={{ type: 'tween', duration: 0.3 }} />
-          </motion.button>
+            <Zap className="w-6 h-6" />
+            Vásárlás most
+          </button>
         </div>
       </section>
     </div>
