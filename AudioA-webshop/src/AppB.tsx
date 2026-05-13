@@ -10,9 +10,10 @@ import { SkeletonLoader } from './components/SkeletonLoader';
 import { HeaderPro } from './components/HeaderPro';
 import { FooterPro } from './components/FooterPro';
 
-// Import images from assets
-import proImage from './assets/birgith-roosipuu-6jMXHpbpL0M-unsplash.jpg';
-import studioImage from './assets/sound-tools-2QUUKTJUKgI-unsplash.jpg';
+// Image URLs from public assets
+const proImage = '/assets/adrian-regeci-rlJngr1ReOw-unsplash.jpg';
+const studioImage = '/assets/sound-tools-NOCwdxBRGJA-unsplash.jpg';
+const landingImage = '/assets/sound-tools-Q-J34Sj65FQ-unsplash.jpg';
 
 interface CartItem {
   id: number;
@@ -196,7 +197,7 @@ export default function AppB() {
             </motion.div>
 
             <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} whileHover={{ scale: 1.02 }} className="transition-transform duration-300">
-              <ImageWithFallback src="https://images.unsplash.com/photo-1657223143933-33ceab36ecb9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcmVtaXVtJTIwaGVhZHBob25lcyUyMGJsYWNrfGVufDF8fHx8MTc2Njc0MTg3NHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" alt="Premium AudioA Headphones" className="w-full h-auto rounded-lg shadow-lg" />
+              <ImageWithFallback src={landingImage} alt="Premium AudioA Headphones" className="w-full h-auto rounded-lg shadow-lg" />
             </motion.div>
           </div>
         </section>
@@ -207,9 +208,9 @@ export default function AppB() {
           <div className="grid md:grid-cols-2 gap-8 md:gap-12">
             {products.map((product, index) => (
               <motion.div key={product.id} className="border border-gray-200 rounded-lg overflow-hidden group" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55, delay: index * 0.12 }} whileHover={{ y: -8 }}>
-                <div className="overflow-hidden relative">
-                  <motion.div whileHover={{ scale: 1.06 }} transition={{ duration: 0.45 }}>
-                    <ImageWithFallback src={product.image} alt={product.name} className="w-full h-64 sm:h-80 object-cover" />
+                <div className="overflow-hidden relative h-96 bg-gray-100">
+                  <motion.div whileHover={{ scale: 1.06 }} transition={{ duration: 0.45 }} className="h-full">
+                    <img src={product.image} alt={product.name} className="w-full h-full object-scale-down" />
                   </motion.div>
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300" />
                 </div>

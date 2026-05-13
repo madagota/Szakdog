@@ -7,9 +7,10 @@ import { FooterPro } from './components/FooterPro';
 import ReactGA from "react-ga4";
 import ImageWithFallback from './components/figma/ImageWithFallback';
 
-// Import images from assets
-import proImage from './assets/birgith-roosipuu-6jMXHpbpL0M-unsplash.jpg';
-import studioImage from './assets/sound-tools-2QUUKTJUKgI-unsplash.jpg';
+// Image URLs from public assets
+const proImage = '/assets/adrian-regeci-rlJngr1ReOw-unsplash.jpg';
+const studioImage = '/assets/sound-tools-NOCwdxBRGJA-unsplash.jpg';
+const landingImage = '/assets/sound-tools-Q-J34Sj65FQ-unsplash.jpg';
 interface Product {
   id: number;
   name: string;
@@ -252,7 +253,7 @@ export default function App() {
           </div>
           <div>
             <img 
-              src="https://images.unsplash.com/photo-1657223143933-33ceab36ecb9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcmVtaXVtJTIwaGVhZHBob25lcyUyMGJsYWNrfGVufDF8fHx8MTc2Njc0MTg3NHww&ixlib=rb-4.1.0&q=80&w=1080" 
+              src={landingImage} 
               alt="Premium AudioA"
               className="w-full h-auto rounded-lg shadow-lg object-cover"
             />
