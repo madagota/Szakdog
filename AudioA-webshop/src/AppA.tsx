@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import ProductDetailsStatic from './components/ProductDetailsStatic';
 import { Checkout } from './components/Checkout';
@@ -31,6 +31,7 @@ export default function App() {
   const [cartOpen, setCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [showWelcome, setShowWelcome] = useState(true);
+  const [pendingScrollSection, setPendingScrollSection] = useState<string>('');
 
   const products: Product[] = [
     {
@@ -48,6 +49,43 @@ export default function App() {
       image: studioImage
     }
   ];
+
+  const scrollToSection = (section: string) => {
+    const element = document.getElementById(section);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const navigateHome = () => {
+    setCurrentPage('home');
+    setPendingScrollSection('');
+    setCartOpen(false);
+    window.scrollTo(0, 0);
+  };
+
+  const navigateHomeAndScroll = (section: string) => {
+    if (currentPage !== 'home') {
+      setCurrentPage('home');
+      setPendingScrollSection(section);
+      window.scrollTo(0, 0);
+    } else {
+      scrollToSection(section);
+    }
+  };
+
+  useEffect(() => {
+    if (currentPage === 'home' && pendingScrollSection) {
+      const timer = window.setTimeout(() => {
+        const element = document.getElementById(pendingScrollSection);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+        setPendingScrollSection('');
+      }, 0);
+      return () => window.clearTimeout(timer);
+    }
+  }, [currentPage, pendingScrollSection]);
 
   const addToCart = (id: number) => {
     setCartItems(prev => {
@@ -147,7 +185,8 @@ export default function App() {
           <HeaderPro
             cartCount={cartCount}
             onCartClick={() => setCartOpen(true)}
-            onLogoClick={() => setCurrentPage('home')}
+            onLogoClick={navigateHome}
+            onNavigateSection={navigateHomeAndScroll}
             animated={false}
             currentPage={currentPage}
           />
@@ -155,7 +194,7 @@ export default function App() {
 
         <ProductDetailsStatic
           product={selectedProduct}
-          onBack={() => setCurrentPage('home')}
+          onBack={navigateHome}
           onAddToCart={addToCart}
         />
         <FooterPro />
@@ -194,7 +233,8 @@ export default function App() {
           <HeaderPro
             cartCount={cartCount}
             onCartClick={() => setCartOpen(true)}
-            onLogoClick={() => setCurrentPage('home')}
+            onLogoClick={navigateHome}
+            onNavigateSection={navigateHomeAndScroll}
             animated={false}
             currentPage={currentPage}
           />
@@ -204,7 +244,7 @@ export default function App() {
           cartItems={cartItems}
           cartTotal={cartTotal}
           onBack={() => {
-            setCurrentPage('home');
+            navigateHome();
             setCartOpen(true);
           }}
           onComplete={handleCheckoutComplete}
@@ -249,7 +289,8 @@ export default function App() {
         <HeaderPro
           cartCount={cartCount}
           onCartClick={() => setCartOpen(true)}
-          onLogoClick={() => setCurrentPage('home')}
+          onLogoClick={navigateHome}
+          onNavigateSection={navigateHomeAndScroll}
           animated={false}
           currentPage={currentPage}
         />

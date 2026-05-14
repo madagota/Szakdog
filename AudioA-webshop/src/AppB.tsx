@@ -1,7 +1,7 @@
 import ImageWithFallback from './components/figma/ImageWithFallback';
 import { useState, useEffect } from 'react';
-import { X, Check } from 'lucide-react';
-import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
+import { X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import ProductDetailsAnimated from './components/ProductDetailsAnimated';
 import { Checkout } from './components/Checkout';
 import { SkeletonLoader } from './components/SkeletonLoader';
@@ -37,12 +37,49 @@ export default function AppB() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [showWelcome, setShowWelcome] = useState(true);
   const [cartBounce, setCartBounce] = useState(false);
-  const [addToCartSuccess, setAddToCartSuccess] = useState<{ [key: number]: boolean }>({});
+  const [pendingScrollSection, setPendingScrollSection] = useState<string>('');
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 600);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (currentPage === 'home' && pendingScrollSection) {
+      const timer = window.setTimeout(() => {
+        const element = document.getElementById(pendingScrollSection);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+        setPendingScrollSection('');
+      }, 0);
+      return () => window.clearTimeout(timer);
+    }
+  }, [currentPage, pendingScrollSection]);
+
+  const scrollToSection = (section: string) => {
+    const element = document.getElementById(section);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const navigateHome = () => {
+    setCurrentPage('home');
+    setPendingScrollSection('');
+    setCartOpen(false);
+    window.scrollTo(0, 0);
+  };
+
+  const navigateHomeAndScroll = (section: string) => {
+    if (currentPage !== 'home') {
+      setCurrentPage('home');
+      setPendingScrollSection(section);
+      window.scrollTo(0, 0);
+    } else {
+      scrollToSection(section);
+    }
+  };
 
   const products: Product[] = [
     {
@@ -72,10 +109,6 @@ export default function AppB() {
     // Cart icon bounce animáció
     setCartBounce(true);
     setTimeout(() => setCartBounce(false), 400);
-    
-    // Add to cart success animáció
-    setAddToCartSuccess(prev => ({ ...prev, [id]: true }));
-    setTimeout(() => setAddToCartSuccess(prev => ({ ...prev, [id]: false })), 1200);
   };
 
   const removeFromCart = (id: number) => setCartItems(prev => prev.filter(item => item.id !== id));
@@ -141,9 +174,9 @@ export default function AppB() {
             <HeaderPro
               cartCount={cartCount}
               onCartClick={() => setCartOpen(true)}
-              onLogoClick={() => setCurrentPage('home')}
+              onLogoClick={navigateHome}
+              onNavigateSection={navigateHomeAndScroll}
               animated={true}
-              onFeaturesClick={() => viewProductDetails(products[0])}
               currentPage={currentPage}
               cartBounce={cartBounce}
             />
@@ -151,7 +184,7 @@ export default function AppB() {
 
           <ProductDetailsAnimated
             product={selectedProduct}
-            onBack={() => setCurrentPage('home')}
+            onBack={navigateHome}
             onAddToCart={addToCart}
             onBuyNow={(id, name, price) => {
               addToCart(id, name, price);
@@ -197,9 +230,9 @@ export default function AppB() {
             <HeaderPro
               cartCount={cartCount}
               onCartClick={() => setCartOpen(true)}
-              onLogoClick={() => setCurrentPage('home')}
+              onLogoClick={navigateHome}
+              onNavigateSection={navigateHomeAndScroll}
               animated={true}
-              onFeaturesClick={() => viewProductDetails(products[0])}
               currentPage={currentPage}
             />
           )}
@@ -207,7 +240,10 @@ export default function AppB() {
           <Checkout
             cartItems={cartItems}
             cartTotal={cartTotal}
-            onBack={() => { setCurrentPage('home'); setCartOpen(true); }}
+            onBack={() => {
+              navigateHome();
+              setCartOpen(true);
+            }}
             onComplete={handleCheckoutComplete}
             animated={true}
           />
@@ -249,10 +285,12 @@ export default function AppB() {
           <HeaderPro
             cartCount={cartCount}
             onCartClick={() => setCartOpen(true)}
-            onLogoClick={() => setCurrentPage('home')}
+            onLogoClick={navigateHome}
+            onNavigateSection={navigateHomeAndScroll}
             animated={true}
-            onFeaturesClick={() => viewProductDetails(products[0])}
-            currentPage={currentPage}            cartBounce={cartBounce}          />
+            currentPage={currentPage}
+            cartBounce={cartBounce}
+          />
         )}
 
         <div className="pt-20">
@@ -311,8 +349,8 @@ export default function AppB() {
                                 <motion.button
                                   onClick={() => removeFromCart(item.id)}
                                   className="text-gray-400 hover:text-red-500 transition-colors"
-                                  whileHover={{ scale: 1.15 }}
-                                  whileTap={{ scale: 0.95 }}
+                                  whileHover={{ scale: 1.15, rotate: 15 }}
+                                  whileTap={{ scale: 0.96 }}
                                 >
                                   <X className="w-4 h-4 sm:w-5 sm:h-5" />
                                 </motion.button>
@@ -321,9 +359,9 @@ export default function AppB() {
                                 <div className="flex items-center gap-2 sm:gap-3">
                                   <motion.button
                                     onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                    className="w-7 h-7 sm:w-8 sm:h-8 border border-gray-300 rounded hover:bg-gray-100 transition-colors text-sm sm:text-base"
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
+                                    className="w-7 h-7 sm:w-8 sm:h-8 border border-gray-300 rounded hover:bg-gray-100 transition-colors text-sm sm:text-base font-bold"
+                                    whileHover={{ scale: 1.15 }}
+                                    whileTap={{ scale: 0.96 }}
                                   >-</motion.button>
                                   <motion.span
                                     key={item.quantity}
@@ -334,9 +372,9 @@ export default function AppB() {
                                   >{item.quantity}</motion.span>
                                   <motion.button
                                     onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                    className="w-7 h-7 sm:w-8 sm:h-8 border border-gray-300 rounded hover:bg-gray-100 transition-colors text-sm sm:text-base"
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
+                                    className="w-7 h-7 sm:w-8 sm:h-8 border border-gray-300 rounded hover:bg-gray-100 transition-colors text-sm sm:text-base font-bold"
+                                    whileHover={{ scale: 1.15 }}
+                                    whileTap={{ scale: 0.96 }}
                                   >+</motion.button>
                                 </div>
                                 <p className="text-sm sm:text-base">RON {item.price * item.quantity}</p>
@@ -355,9 +393,9 @@ export default function AppB() {
                         <p className="text-lg sm:text-xl">RON {cartTotal}</p>
                       </div>
                       <motion.button
-                        className="w-full bg-black text-white py-3 rounded relative overflow-hidden group text-sm sm:text-base"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                        className="w-full bg-black text-white py-3 rounded relative overflow-hidden group text-sm sm:text-base font-bold hover:bg-gray-800 transition-colors"
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.96 }}
                         onClick={handleCheckout}
                       >
                         <span className="relative z-10">Pénztár</span>
@@ -404,13 +442,13 @@ export default function AppB() {
                 </motion.p>
                 <motion.button
                   onClick={scrollToProducts}
-                  className="bg-black text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded relative overflow-hidden group text-sm sm:text-base"
+                  className="bg-black text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded relative overflow-hidden group text-sm sm:text-base font-bold hover:bg-gray-800 transition-colors"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: 0.4 }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.96 }}
                 >
                   <span className="relative z-10">Vásárlás</span>
                   <motion.div
@@ -523,18 +561,22 @@ export default function AppB() {
                     <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4">{product.description}</p>
                     <p className="text-lg sm:text-xl mb-3 sm:mb-4">RON {product.price}</p>
                     <div className="flex flex-col sm:flex-row gap-3">
-                      <button
-                        className="flex-1 border border-black text-black py-2.5 sm:py-3 rounded text-sm sm:text-base"
+                      <motion.button
+                        className="flex-1 border border-black text-black py-2.5 sm:py-3 rounded text-sm sm:text-base font-bold hover:bg-gray-50 transition-colors"
                         onClick={() => viewProductDetails(product)}
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.96 }}
                       >
                         Részletek
-                      </button>
-                      <button
-                        className="flex-1 bg-black text-white py-2.5 sm:py-3 rounded text-sm sm:text-base"
+                      </motion.button>
+                      <motion.button
+                        className="flex-1 bg-black text-white py-2.5 sm:py-3 rounded text-sm sm:text-base font-bold hover:bg-gray-800 transition-colors"
                         onClick={() => addToCart(product.id, product.name, product.price)}
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.96 }}
                       >
                         Kosárba
-                      </button>
+                      </motion.button>
                     </div>
                   </div>
                 </motion.div>

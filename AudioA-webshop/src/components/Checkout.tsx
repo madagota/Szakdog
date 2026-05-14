@@ -1,5 +1,6 @@
-import { ArrowLeft, Check, CreditCard, Lock } from 'lucide-react';
+import { ArrowLeft, Check, CreditCard, Lock, Loader } from 'lucide-react';
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { HeadphoneCableProgress } from './HeadphoneCableProgress';
 
 interface CartItem {
@@ -33,6 +34,7 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete, animated = 
     password: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -66,8 +68,10 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete, animated = 
 
   const handlePaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsProcessing(true);
     // Szimulált fizetés feldolgozás
     await new Promise(resolve => setTimeout(resolve, 1500));
+    setIsProcessing(false);
     setStep('complete');
   };
 
@@ -92,22 +96,26 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete, animated = 
             <p className="text-gray-600 mb-6 text-sm leading-6">
               Ez maximum 2 percet vesz igénybe, de a szakdolgozatomhoz elengedhetetlen, hogy megtudjam, milyen volt a weboldal használata.
             </p>
-            <a 
+            <motion.a 
               href={surveyLink}
               target="_blank" 
               rel="noopener noreferrer" 
               className="block w-full bg-black text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-900 transition-colors shadow-lg"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.96 }}
             >
               Kérdőív megnyitása
-            </a>
+            </motion.a>
           </div>
 
-          <button
+          <motion.button
             onClick={onComplete}
-            className="text-gray-300 hover:text-white font-bold text-sm"
+            className="text-gray-300 hover:text-white font-bold text-sm transition-colors"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.96 }}
           >
             Vissza a webshop kezdőlapjára
-          </button>
+          </motion.button>
         </div>
       </div>
     );
@@ -116,13 +124,15 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete, animated = 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-6 py-6">
-        <button
+        <motion.button
           onClick={onBack}
-          className="flex items-center gap-2 text-gray-600 hover:text-black"
+          className="flex items-center gap-2 text-gray-600 hover:text-black transition-colors"
+          whileHover={{ scale: 1.03, x: -4 }}
+          whileTap={{ scale: 0.96 }}
         >
           <ArrowLeft className="w-5 h-5" />
           Vissza a kosárhoz
-        </button>
+        </motion.button>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-12">
@@ -187,9 +197,14 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete, animated = 
                   </div>
                 </div>
 
-                <button type="submit" className="w-full bg-black text-white py-4 rounded-xl font-bold hover:bg-gray-800">
+                <motion.button 
+                  type="submit" 
+                  className="w-full bg-black text-white py-4 rounded-xl font-bold hover:bg-gray-800 transition-colors"
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.96 }}
+                >
                   Tovább a fizetéshez
-                </button>
+                </motion.button>
               </form>
             )}
 
@@ -223,12 +238,33 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete, animated = 
                 </div>
 
                 <div className="flex gap-4">
-                  <button type="button" onClick={() => setStep('shipping')} className="flex-1 border border-gray-300 py-4 rounded-xl font-bold hover:bg-gray-100">
+                  <motion.button 
+                    type="button" 
+                    onClick={() => setStep('shipping')} 
+                    className="flex-1 border border-gray-300 py-4 rounded-xl font-bold hover:bg-gray-100 transition-colors"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.96 }}
+                  >
                     Vissza
-                  </button>
-                  <button type="submit" className="flex-1 bg-black text-white py-4 rounded-xl font-bold hover:bg-gray-800">
-                    Fizetés RON {cartTotal}
-                  </button>
+                  </motion.button>
+                  <motion.button 
+                    type="submit" 
+                    disabled={isProcessing}
+                    className="flex-1 bg-black text-white py-4 rounded-xl font-bold hover:bg-gray-800 transition-colors disabled:opacity-75 flex items-center justify-center gap-2"
+                    whileHover={{ scale: isProcessing ? 1 : 1.03 }}
+                    whileTap={{ scale: isProcessing ? 1 : 0.96 }}
+                  >
+                    {isProcessing ? (
+                      <>
+                        <motion.span animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }}>
+                          <Loader className="w-5 h-5" />
+                        </motion.span>
+                        Feldolgozás...
+                      </>
+                    ) : (
+                      <>Fizetés RON {cartTotal}</>
+                    )}
+                  </motion.button>
                 </div>
               </form>
             )}

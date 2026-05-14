@@ -30,6 +30,7 @@ export default function ProductDetailsAnimated({ product, onBack, onAddToCart, o
   const [hoveredFeature, setHoveredFeature] = useState<number | null>(null);
   const [showRating, setShowRating] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showAddedCheckmark, setShowAddedCheckmark] = useState(false);
 
   const proImages = [
     proSlide1,
@@ -63,6 +64,12 @@ export default function ProductDetailsAnimated({ product, onBack, onAddToCart, o
   };
 
   const selectImage = (index: number) => setCurrentImageIndex(index);
+
+  const handleAddToCartWithCheckmark = (id: number, name: string, price: number) => {
+    setShowAddedCheckmark(true);
+    onAddToCart(id, name, price);
+    setTimeout(() => setShowAddedCheckmark(false), 1000);
+  };
 
   const features = [
     "Aktív zajszűrés a lenyűgöző hangzásért",
@@ -236,8 +243,8 @@ export default function ProductDetailsAnimated({ product, onBack, onAddToCart, o
               <motion.button
                 className="w-full bg-black text-white font-bold py-4 rounded-xl text-lg hover:bg-gray-800 transition-all flex items-center justify-center gap-2 group relative overflow-hidden"
                 onClick={() => onBuyNow ? onBuyNow(product.id, product.name, product.price) : onAddToCart(product.id, product.name, product.price)}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.96 }}
               >
                 <Zap className="w-5 h-5 group-hover:animate-pulse" />
                 <span className="relative z-10">Vásárlás most</span>
@@ -245,13 +252,24 @@ export default function ProductDetailsAnimated({ product, onBack, onAddToCart, o
               </motion.button>
 
               <motion.button
-                className="w-full border-2 border-black text-black font-bold py-3 rounded-xl text-lg hover:bg-gray-50 transition-all flex items-center justify-center gap-2"
-                onClick={() => onAddToCart(product.id, product.name, product.price)}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                className="w-full border-2 border-black text-black font-bold py-3 rounded-xl text-lg hover:bg-green-50 transition-all flex items-center justify-center gap-2 relative overflow-hidden"
+                onClick={() => handleAddToCartWithCheckmark(product.id, product.name, product.price)}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.96 }}
               >
-                <ShoppingCart className="w-5 h-5" />
-                Kosárba
+                {showAddedCheckmark ? (
+                  <>
+                    <motion.span initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }} transition={{ type: 'spring', stiffness: 400 }}>
+                      <Check className="w-5 h-5 text-green-600" />
+                    </motion.span>
+                    <span className="text-green-600">Hozzáadva!</span>
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart className="w-5 h-5" />
+                    Kosárba
+                  </>
+                )}
               </motion.button>
             </motion.div>
           </motion.div>
