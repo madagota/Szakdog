@@ -131,7 +131,7 @@ export default function ProductDetailsStatic({ product, onBack, onAddToCart, onB
       <div className="max-w-7xl mx-auto px-6 py-6 sticky top-0 z-10 bg-white bg-opacity-95 backdrop-blur-sm">
         <button
           onClick={onBack}
-          className="flex items-center gap-2 text-gray-600 hover:text-black font-bold transition-colors"
+          className="flex items-center gap-2 text-gray-600 hover:text-black font-bold"
         >
           <ArrowLeft className="w-5 h-5" />
           Vissza
@@ -151,7 +151,7 @@ export default function ProductDetailsStatic({ product, onBack, onAddToCart, onB
 
               <button
                 onClick={handlePrevImage}
-                className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/70 text-white w-11 h-11 flex items-center justify-center shadow-lg hover:bg-black transition-colors"
+                className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/70 text-white w-11 h-11 flex items-center justify-center shadow-lg"
                 aria-label="Előző kép"
               >
                 <ChevronLeft className="w-5 h-5" />
@@ -159,7 +159,7 @@ export default function ProductDetailsStatic({ product, onBack, onAddToCart, onB
 
               <button
                 onClick={handleNextImage}
-                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/70 text-white w-11 h-11 flex items-center justify-center shadow-lg hover:bg-black transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/70 text-white w-11 h-11 flex items-center justify-center shadow-lg"
                 aria-label="Következő kép"
               >
                 <ChevronRight className="w-5 h-5" />
@@ -170,7 +170,7 @@ export default function ProductDetailsStatic({ product, onBack, onAddToCart, onB
                   <button
                     key={image}
                     onClick={() => selectImage(index)}
-                    className={`w-12 h-12 rounded-xl overflow-hidden border-2 ${index === currentImageIndex ? 'border-white' : 'border-transparent'} transition-all duration-200`}
+                    className={`w-12 h-12 rounded-xl overflow-hidden border-2 ${index === currentImageIndex ? 'border-white' : 'border-transparent'}`}
                     aria-label={`Kép ${index + 1}`}
                   >
                     <img src={image} alt={`Miniatura ${index + 1}`} className="w-full h-full object-cover" />
@@ -199,16 +199,16 @@ export default function ProductDetailsStatic({ product, onBack, onAddToCart, onB
 
             <div className="space-y-3">
               <button
-                className="w-full bg-black text-white font-bold py-4 rounded-xl text-lg hover:bg-gray-800 transition-all flex items-center justify-center gap-2 group relative overflow-hidden"
+                className="w-full bg-black text-white font-bold py-4 rounded-xl text-lg flex items-center justify-center gap-2 group relative overflow-hidden"
                 onClick={() => onBuyNow ? onBuyNow(product.id, product.name, product.price) : onAddToCart(product.id, product.name, product.price)}
               >
-                <Zap className="w-5 h-5 group-hover:animate-pulse" />
+                <Zap className="w-5 h-5" />
                 <span className="relative z-10">Vásárlás most</span>
                 <div className="absolute inset-0 bg-gray-700" />
               </button>
 
               <button
-                className="w-full border-2 border-black text-black font-bold py-3 rounded-xl text-lg hover:bg-gray-50 transition-all flex items-center justify-center gap-2"
+                className="w-full border-2 border-black text-black font-bold py-3 rounded-xl text-lg flex items-center justify-center gap-2"
                 onClick={() => onAddToCart(product.id, product.name, product.price)}
               >
                 <ShoppingCart className="w-5 h-5" />
@@ -229,7 +229,7 @@ export default function ProductDetailsStatic({ product, onBack, onAddToCart, onB
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="flex items-start gap-4 bg-white p-6 rounded-xl border border-gray-100 hover:border-black hover:shadow-lg transition-all cursor-default"
+                className="flex items-start gap-4 bg-white p-6 rounded-xl border border-gray-100"
               >
                 <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                   <Check className="w-4 h-4 text-white" />
@@ -253,7 +253,7 @@ export default function ProductDetailsStatic({ product, onBack, onAddToCart, onB
             {specs.map((spec, index) => (
               <div
                 key={index}
-                className="border-b border-gray-200 py-6 flex justify-between items-center px-4 rounded transition-all hover:bg-gray-50"
+                className="border-b border-gray-200 py-6 flex justify-between items-center px-4 rounded"
               >
                 <span className="text-gray-600 font-medium">{spec.label}</span>
                 <span className="font-bold">
@@ -295,7 +295,7 @@ export default function ProductDetailsStatic({ product, onBack, onAddToCart, onB
             {reviews.map((review) => (
               <div
                 key={review.id}
-                className="bg-white border border-gray-200 rounded-2xl p-8 hover:border-black hover:shadow-lg transition-all"
+                className="bg-white border border-gray-200 rounded-2xl p-8"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-4">

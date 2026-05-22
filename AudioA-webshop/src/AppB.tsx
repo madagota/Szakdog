@@ -1,6 +1,6 @@
 import ImageWithFallback from './components/figma/ImageWithFallback';
-import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import ProductDetailsAnimated from './components/ProductDetailsAnimated';
 import { Checkout } from './components/Checkout';
@@ -37,7 +37,16 @@ export default function AppB() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [showWelcome, setShowWelcome] = useState(true);
   const [cartBounce, setCartBounce] = useState(false);
+  const [addedStates, setAddedStates] = useState<Record<number, boolean>>({});
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [hoveredProductId, setHoveredProductId] = useState<number | null>(null);
+  
   const [pendingScrollSection, setPendingScrollSection] = useState<string>('');
+  const prevCartCount = useRef<number>(0);
+  const toastTimer = useRef<number | null>(null);
+
+  const cartTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 600);
@@ -56,6 +65,30 @@ export default function AppB() {
       return () => window.clearTimeout(timer);
     }
   }, [currentPage, pendingScrollSection]);
+
+  useEffect(() => {
+    if (cartCount > prevCartCount.current) {
+      setCartBounce(true);
+      const timer = window.setTimeout(() => setCartBounce(false), 400);
+      prevCartCount.current = cartCount;
+      return () => window.clearTimeout(timer);
+    }
+    prevCartCount.current = cartCount;
+  }, [cartCount]);
+
+  useEffect(() => {
+    if (toastMessage && toastTimer.current) {
+      window.clearTimeout(toastTimer.current);
+    }
+    if (toastMessage) {
+      toastTimer.current = window.setTimeout(() => setToastMessage(null), 2000);
+    }
+    return () => {
+      if (toastTimer.current) {
+        window.clearTimeout(toastTimer.current);
+      }
+    };
+  }, [toastMessage]);
 
   const scrollToSection = (section: string) => {
     const element = document.getElementById(section);
@@ -105,21 +138,29 @@ export default function AppB() {
       return [...prev, { id, name, price, quantity: 1 }];
     });
     setCartOpen(true);
-    
-    // Cart icon bounce animáció
-    setCartBounce(true);
-    setTimeout(() => setCartBounce(false), 400);
+    setAddedStates(prev => ({ ...prev, [id]: true }));
+    window.setTimeout(() => setAddedStates(prev => ({ ...prev, [id]: false })), 1200);
+    setToastMessage(`${name} kosárba rakva`);
   };
 
   const removeFromCart = (id: number) => setCartItems(prev => prev.filter(item => item.id !== id));
 
   const updateQuantity = (id: number, quantity: number) => {
-    if (quantity === 0) return removeFromCart(id);
+    const currentItem = cartItems.find(item => item.id === id);
+    if (!currentItem) return;
+
+    if (quantity === 0) {
+      if (currentItem.quantity === 1) {
+        setCartItems(prev => prev.filter(item => item.id !== id));
+        return;
+      }
+      removeFromCart(id);
+      return;
+    }
+
     setCartItems(prev => prev.map(item => (item.id === id ? { ...item, quantity } : item)));
   };
 
-  const cartTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const scrollToProducts = () => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
 
@@ -160,20 +201,28 @@ export default function AppB() {
                   <br/><br/>
                   A fizetésnél nyugodtan adj meg kamu adatokat, ez csak egy szimuláció. A rendelés végén egy rövid kérdőív vár rád.
                 </p>
-                <button
+                <motion.button
                   onClick={() => setShowWelcome(false)}
                   className="w-full bg-black text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-900 transition-colors"
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.96 }}
                 >
                   Értettem, kezdjük a tesztet!
-                </button>
+                </motion.button>
               </div>
             </div>
           )}
 
           {!showWelcome && (
             <HeaderPro
+              cartItems={cartItems}
+              cartTotal={cartTotal}
+              onRemoveFromCart={removeFromCart}
+              onUpdateQuantity={updateQuantity}
+              onCheckout={handleCheckout}
+              isCartOpen={cartOpen}
+              setCartOpen={setCartOpen}
               cartCount={cartCount}
-              onCartClick={() => setCartOpen(true)}
               onLogoClick={navigateHome}
               onNavigateSection={navigateHomeAndScroll}
               animated={true}
@@ -216,24 +265,33 @@ export default function AppB() {
                   <br/><br/>
                   A fizetésnél adj meg kamu adatokat, ez csak egy szimuláció. A rendelés végén egy rövid kérdőív vár rád.
                 </p>
-                <button
+                <motion.button
                   onClick={() => setShowWelcome(false)}
                   className="w-full bg-black text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-900 transition-colors"
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.96 }}
                 >
                   Kezdés!
-                </button>
+                </motion.button>
               </div>
             </div>
           )}
 
           {!showWelcome && (
             <HeaderPro
+              cartItems={cartItems}
+              cartTotal={cartTotal}
+              onRemoveFromCart={removeFromCart}
+              onUpdateQuantity={updateQuantity}
+              onCheckout={handleCheckout}
+              isCartOpen={cartOpen}
+              setCartOpen={setCartOpen}
               cartCount={cartCount}
-              onCartClick={() => setCartOpen(true)}
               onLogoClick={navigateHome}
               onNavigateSection={navigateHomeAndScroll}
               animated={true}
               currentPage={currentPage}
+              cartBounce={cartBounce}
             />
           )}
 
@@ -271,147 +329,54 @@ export default function AppB() {
                 <br/><br/>
                 A fizetésnél nyugodtan adj meg kamu adatokat, ez csak egy szimuláció. A rendelés végén egy rövid kérdőív vár rád.
               </p>
-              <button
+              <motion.button
                 onClick={() => setShowWelcome(false)}
                 className="w-full bg-black text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-900 transition-colors"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.96 }}
               >
                 Értettem, kezdjük a tesztet!
-              </button>
+              </motion.button>
             </div>
           </div>
         )}
 
         {!showWelcome && (
-          <HeaderPro
-            cartCount={cartCount}
-            onCartClick={() => setCartOpen(true)}
-            onLogoClick={navigateHome}
-            onNavigateSection={navigateHomeAndScroll}
-            animated={true}
-            currentPage={currentPage}
-            cartBounce={cartBounce}
-          />
+          <>
+            <HeaderPro
+              cartItems={cartItems}
+              cartTotal={cartTotal}
+              onRemoveFromCart={removeFromCart}
+              onUpdateQuantity={updateQuantity}
+              onCheckout={handleCheckout}
+              isCartOpen={cartOpen}
+              setCartOpen={setCartOpen}
+              cartCount={cartCount}
+              onLogoClick={navigateHome}
+              onNavigateSection={navigateHomeAndScroll}
+              animated={true}
+              currentPage={currentPage}
+              cartBounce={cartBounce}
+            />
+            <AnimatePresence>
+              {toastMessage && (
+                <motion.div
+                  key="toast"
+                  initial={{ opacity: 0, x: 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 40 }}
+                  transition={{ duration: 0.35 }}
+                  className="fixed right-4 top-24 z-[200] rounded-2xl bg-black text-white px-4 py-3 shadow-2xl"
+                >
+                  {toastMessage}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </>
         )}
 
         <div className="pt-20">
-          <AnimatePresence>
-            {cartOpen && (
-              <>
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="fixed inset-0 z-50 bg-black bg-opacity-50 backdrop-blur-sm"
-                  onClick={() => setCartOpen(false)}
-                />
-                <motion.aside
-                  initial={{ x: '100%' }}
-                  animate={{ x: 0 }}
-                  exit={{ x: '100%' }}
-                  transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                  className="fixed right-0 top-0 h-full w-full sm:w-96 max-w-md bg-white shadow-2xl flex flex-col z-50"
-                >
-                  <div className="border-b border-gray-200 p-4 sm:p-6 flex items-center justify-between">
-                    <h2 className="text-xl sm:text-2xl">Kosár</h2>
-                    <motion.button
-                      onClick={() => setCartOpen(false)}
-                      whileHover={{ rotate: 90, scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      transition={{ type: 'spring', stiffness: 300 }}
-                    >
-                      <X className="w-6 h-6" />
-                    </motion.button>
-                  </div>
-
-                  <div className="flex-1 overflow-y-auto p-4 sm:p-6">
-                    {cartItems.length === 0 ? (
-                      <motion.p
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="text-gray-600 text-center py-12"
-                      >
-                        A kosarad üres.
-                      </motion.p>
-                    ) : (
-                      <div className="space-y-4">
-                        <AnimatePresence>
-                          {cartItems.map((item, index) => (
-                            <motion.div
-                              key={item.id}
-                              initial={{ opacity: 0, x: 50 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              exit={{ opacity: 0, x: -50, height: 0 }}
-                              transition={{ delay: index * 0.04 }}
-                              className="border border-gray-200 rounded-lg p-3 sm:p-4"
-                            >
-                              <div className="flex justify-between mb-2">
-                                <h3 className="text-sm sm:text-base">{item.name}</h3>
-                                <motion.button
-                                  onClick={() => removeFromCart(item.id)}
-                                  className="text-gray-400 hover:text-red-500 transition-colors"
-                                  whileHover={{ scale: 1.15, rotate: 15 }}
-                                  whileTap={{ scale: 0.96 }}
-                                >
-                                  <X className="w-4 h-4 sm:w-5 sm:h-5" />
-                                </motion.button>
-                              </div>
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2 sm:gap-3">
-                                  <motion.button
-                                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                    className="w-7 h-7 sm:w-8 sm:h-8 border border-gray-300 rounded hover:bg-gray-100 transition-colors text-sm sm:text-base font-bold"
-                                    whileHover={{ scale: 1.15 }}
-                                    whileTap={{ scale: 0.96 }}
-                                  >-</motion.button>
-                                  <motion.span
-                                    key={item.quantity}
-                                    initial={{ scale: 1.2, opacity: 0 }}
-                                    animate={{ scale: 1, opacity: 1 }}
-                                    transition={{ type: 'spring', stiffness: 300 }}
-                                    className="text-sm sm:text-base"
-                                  >{item.quantity}</motion.span>
-                                  <motion.button
-                                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                    className="w-7 h-7 sm:w-8 sm:h-8 border border-gray-300 rounded hover:bg-gray-100 transition-colors text-sm sm:text-base font-bold"
-                                    whileHover={{ scale: 1.15 }}
-                                    whileTap={{ scale: 0.96 }}
-                                  >+</motion.button>
-                                </div>
-                                <p className="text-sm sm:text-base">RON {item.price * item.quantity}</p>
-                              </div>
-                            </motion.div>
-                          ))}
-                        </AnimatePresence>
-                      </div>
-                    )}
-                  </div>
-
-                  {cartItems.length > 0 && (
-                    <div className="border-t border-gray-200 p-4 sm:p-6">
-                      <div className="flex justify-between mb-4">
-                        <span className="text-base sm:text-lg">Összesen</span>
-                        <p className="text-lg sm:text-xl">RON {cartTotal}</p>
-                      </div>
-                      <motion.button
-                        className="w-full bg-black text-white py-3 rounded relative overflow-hidden group text-sm sm:text-base font-bold hover:bg-gray-800 transition-colors"
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.96 }}
-                        onClick={handleCheckout}
-                      >
-                        <span className="relative z-10">Pénztár</span>
-                        <motion.div
-                          className="absolute inset-0 bg-gray-800"
-                          initial={{ x: '-100%' }}
-                          whileHover={{ x: 0 }}
-                          transition={{ type: 'tween', duration: 0.28 }}
-                        />
-                      </motion.button>
-                    </div>
-                  )}
-                </motion.aside>
-              </>
-            )}
-          </AnimatePresence>
+          {/* Cart dropdown moved into HeaderPro (no overlay) */}
 
           {/* Hero szekció */}
           <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-20">
@@ -541,6 +506,8 @@ export default function AppB() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.55, delay: index * 0.12 }}
                   whileHover={{ y: -8 }}
+                  onMouseEnter={() => setHoveredProductId(product.id)}
+                  onMouseLeave={() => setHoveredProductId(null)}
                 >
                   <div style={{ height: '384px', overflow: 'hidden', position: 'relative', backgroundColor: '#f3f4f6' }}>
                     <motion.div
@@ -554,6 +521,28 @@ export default function AppB() {
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       />
                     </motion.div>
+                    <AnimatePresence>
+                      {hoveredProductId === product.id && (
+                        <motion.button
+                          type="button"
+                          onClick={() => viewProductDetails(product)}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.25 }}
+                          className="absolute inset-0 bg-black/40 text-white flex items-end justify-center pb-6 text-sm sm:text-base font-bold"
+                        >
+                          <motion.span
+                            initial={{ y: 20, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: 20, opacity: 0 }}
+                            transition={{ duration: 0.25 }}
+                          >
+                            Részletek megtekintése →
+                          </motion.span>
+                        </motion.button>
+                      )}
+                    </AnimatePresence>
                   </div>
 
                   <div className="p-4 sm:p-6">
@@ -570,12 +559,13 @@ export default function AppB() {
                         Részletek
                       </motion.button>
                       <motion.button
-                        className="flex-1 bg-black text-white py-2.5 sm:py-3 rounded text-sm sm:text-base font-bold hover:bg-gray-800 transition-colors"
+                        className={`flex-1 bg-black text-white py-2.5 sm:py-3 rounded text-sm sm:text-base font-bold transition-colors ${addedStates[product.id] ? 'opacity-70 cursor-not-allowed' : 'hover:bg-gray-800'}`}
                         onClick={() => addToCart(product.id, product.name, product.price)}
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.96 }}
+                        whileHover={addedStates[product.id] ? {} : { scale: 1.03 }}
+                        whileTap={addedStates[product.id] ? {} : { scale: 0.96 }}
+                        disabled={Boolean(addedStates[product.id])}
                       >
-                        Kosárba
+                        {addedStates[product.id] ? '✓ Hozzáadva' : 'Kosárba'}
                       </motion.button>
                     </div>
                   </div>
