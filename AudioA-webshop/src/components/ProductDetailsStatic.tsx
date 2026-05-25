@@ -139,86 +139,110 @@ const currentImage = galleryImages[currentImageIndex];
         </button>
       </div>
 
+      
       {/* Hero Szekció */}
-      <section className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div className="transition-transform duration-300">
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-gray-100">
-              <img
-                src={currentImage}
-                alt={`${product.name} kép ${currentImageIndex + 1}`}
-                className="w-full h-[520px] sm:h-[560px] object-contain"
+<section className="max-w-7xl mx-auto px-6 py-12">
+  <div className="grid lg:grid-cols-2 gap-16 items-center">
+
+    {/* BAL OLDAL: Kép */}
+    <div className="transition-transform duration-300">
+
+      {/* Cím + értékelés CSAK mobilon, kép felett */}
+      <div className="block lg:hidden mb-6">
+        <h1 className="text-3xl font-bold mb-3">{product.name}</h1>
+        <div className="flex items-center gap-2">
+          <div className="flex gap-0.5">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Star
+                key={star}
+                className={`w-4 h-4 ${
+                  star <= Math.round(averageRating)
+                    ? "fill-yellow-400 text-yellow-400"
+                    : "text-gray-300"
+                }`}
               />
-
-              <button
-                onClick={handlePrevImage}
-                className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/70 text-white w-11 h-11 flex items-center justify-center shadow-lg"
-                aria-label="Előző kép"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-
-              <button
-                onClick={handleNextImage}
-                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/70 text-white w-11 h-11 flex items-center justify-center shadow-lg"
-                aria-label="Következő kép"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-black/40 backdrop-blur-xl rounded-full px-3 py-2">
-                {galleryImages.map((image, index) => (
-                  <button
-                    key={image}
-                    onClick={() => selectImage(index)}
-                    className={`w-12 h-12 rounded-xl overflow-hidden border-2 ${index === currentImageIndex ? 'border-white' : 'border-transparent'}`}
-                    aria-label={`Kép ${index + 1}`}
-                  >
-                    <img src={image} alt={`Miniatura ${index + 1}`} className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
-
-          <div>
-            <h1 className="text-5xl font-bold mb-4">
-              {product.name}
-            </h1>
-            <p className="text-2xl text-gray-600 mb-8">
-              {product.description}
-            </p>
-            
-            <div className="mb-8">
-              <div className="flex items-baseline gap-2 mb-4">
-                <p className="text-4xl font-bold">RON {product.price}</p>
-                <p className="text-lg text-gray-500 line-through">RON {Math.round(product.price * 1.2)}</p>
-                <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-bold">-17%</span>
-              </div>
-              <p className="text-gray-500 text-sm">✓ Ingyenes szállítás | 30 napos visszavásárlás | 2 év garancia</p>
-            </div>
-
-            <div className="space-y-3">
-              <button
-                className="w-full bg-black text-white font-bold py-4 rounded-xl text-lg flex items-center justify-center gap-2 group relative overflow-hidden"
-                onClick={() => onBuyNow ? onBuyNow(product.id, product.name, product.price) : onAddToCart(product.id, product.name, product.price)}
-              >
-                <Zap className="w-5 h-5" />
-                <span className="relative z-10">Vásárlás most</span>
-                <div className="absolute inset-0 bg-gray-700" />
-              </button>
-
-              <button
-                className="w-full border-2 border-black text-black font-bold py-3 rounded-xl text-lg flex items-center justify-center gap-2"
-                onClick={() => onAddToCart(product.id, product.name, product.price)}
-              >
-                <ShoppingCart className="w-5 h-5" />
-                Kosárba
-              </button>
-            </div>
-          </div>
+          <span className="text-sm font-bold">{averageRating.toFixed(1)}</span>
+          <span className="text-sm text-gray-500">({reviews.length} értékelés)</span>
         </div>
-      </section>
+      </div>
+
+      {/* Kép */}
+      <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-gray-100">
+        <img
+          src={currentImage}
+          alt={`${product.name} kép ${currentImageIndex + 1}`}
+          className="w-full h-[520px] sm:h-[560px] object-contain"
+        />
+        <button
+          onClick={handlePrevImage}
+          className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/70 text-white w-11 h-11 flex items-center justify-center shadow-lg"
+          aria-label="Előző kép"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        <button
+          onClick={handleNextImage}
+          className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/70 text-white w-11 h-11 flex items-center justify-center shadow-lg"
+          aria-label="Következő kép"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-black/40 backdrop-blur-xl rounded-full px-3 py-2">
+          {galleryImages.map((image, index) => (
+            <button
+              key={image}
+              onClick={() => selectImage(index)}
+              className={`w-12 h-12 rounded-xl overflow-hidden border-2 ${index === currentImageIndex ? 'border-white' : 'border-transparent'}`}
+              aria-label={`Kép ${index + 1}`}
+            >
+              <img src={image} alt={`Miniatura ${index + 1}`} className="w-full h-full object-cover" />
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {/* JOBB OLDAL: Info — desktopon teljes, mobilon cím nélkül */}
+    <div>
+      {/* Cím + értékelés CSAK desktopon */}
+      <div className="hidden lg:block">
+        <h1 className="text-5xl font-bold mb-4">{product.name}</h1>
+      </div>
+
+      <p className="text-2xl text-gray-600 mb-8">{product.description}</p>
+
+      <div className="mb-8">
+        <div className="flex items-baseline gap-2 mb-4">
+          <p className="text-4xl font-bold">RON {product.price}</p>
+          <p className="text-lg text-gray-500 line-through">RON {Math.round(product.price * 1.2)}</p>
+          <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-bold">-17%</span>
+        </div>
+        <p className="text-gray-500 text-sm">✓ Ingyenes szállítás | 30 napos visszavásárlás | 2 év garancia</p>
+      </div>
+
+      <div className="space-y-3">
+        <button
+          className="w-full bg-black text-white font-bold py-4 rounded-xl text-lg flex items-center justify-center gap-2 group relative overflow-hidden"
+          onClick={() => onBuyNow ? onBuyNow(product.id, product.name, product.price) : onAddToCart(product.id, product.name, product.price)}
+        >
+          <Zap className="w-5 h-5" />
+          <span className="relative z-10">Vásárlás most</span>
+          <div className="absolute inset-0 bg-gray-700" />
+        </button>
+        <button
+          className="w-full border-2 border-black text-black font-bold py-3 rounded-xl text-lg flex items-center justify-center gap-2"
+          onClick={() => onAddToCart(product.id, product.name, product.price)}
+        >
+          <ShoppingCart className="w-5 h-5" />
+          Kosárba
+        </button>
+      </div>
+    </div>
+
+  </div>
+</section>
 
       {/* Jellemzők Szekció */}
       <section className="bg-gradient-to-b from-gray-50 to-white py-20 mt-20">

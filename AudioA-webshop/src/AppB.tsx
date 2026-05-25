@@ -359,74 +359,86 @@ const viewProductDetails = (product: Product) => {
             </motion.h2>
             <div className="grid md:grid-cols-2 gap-8 md:gap-12">
               {products.map((product, index) => (
-                <motion.div key={product.id} className="border border-gray-200 rounded-lg overflow-hidden group"
-                  initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                  transition={{ duration: 0.55, delay: index * 0.12 }} whileHover={{ y: -8 }}
-                  onMouseEnter={() => setHoveredProductId(product.id)}
-                  onMouseLeave={() => setHoveredProductId(null)}>
+  <motion.div key={product.id} className="border border-gray-200 rounded-lg overflow-hidden group"
+    initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+    transition={{ duration: 0.55, delay: index * 0.12 }} whileHover={{ y: -8 }}
+    onMouseEnter={() => setHoveredProductId(product.id)}
+    onMouseLeave={() => setHoveredProductId(null)}>
 
-                  <div style={{ height: '384px', overflow: 'hidden', position: 'relative', backgroundColor: '#f3f4f6' }}>
-                    <motion.div whileHover={{ scale: 1.06 }} transition={{ duration: 0.45 }} style={{ height: '100%' }}>
-                      <img src={product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    </motion.div>
-                    <AnimatePresence>
-                      {hoveredProductId === product.id && (
-                        <motion.button type="button" onClick={() => viewProductDetails(product)}
-                          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}
-                          className="absolute inset-0 bg-black/40 text-white flex items-end justify-center pb-6 font-bold">
-                          <motion.span initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
-                            exit={{ y: 20, opacity: 0 }} transition={{ duration: 0.25 }}>
-                            Részletek megtekintése →
-                          </motion.span>
-                        </motion.button>
-                      )}
-                    </AnimatePresence>
-                  </div>
+    {/* Cím CSAK mobilon a kép felett */}
+    <motion.div
+      className="block md:hidden px-4 sm:px-6 pt-5 pb-3"
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, delay: index * 0.12 }}
+    >
+      <h3 className="text-xl sm:text-2xl">{product.name}</h3>
+    </motion.div>
 
-                  <div className="p-4 sm:p-6">
-                    <h3 className="text-xl sm:text-2xl mb-2">{product.name}</h3>
-                    <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4">{product.description}</p>
-                    <p className="text-lg sm:text-xl mb-3 sm:mb-4 font-semibold">
-                      <PriceCounter target={product.price} prefix="RON" />
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-3">
-                      <motion.button
-                        className="flex-1 border border-black text-black py-2.5 sm:py-3 rounded text-sm sm:text-base font-bold relative overflow-hidden"
-                        onClick={() => viewProductDetails(product)}
-                        whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.96 }}>
-                        <span className="relative z-10">Részletek</span>
-                        <motion.div className="absolute bottom-0 left-0 h-0.5 bg-black"
-                          initial={{ width: 0 }} whileHover={{ width: '100%' }} transition={{ type: 'tween', duration: 0.3 }} />
-                      </motion.button>
+    <div style={{ height: '384px', overflow: 'hidden', position: 'relative', backgroundColor: '#f3f4f6' }}>
+      <motion.div whileHover={{ scale: 1.06 }} transition={{ duration: 0.45 }} style={{ height: '100%' }}>
+        <img src={product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      </motion.div>
+      <AnimatePresence>
+        {hoveredProductId === product.id && (
+          <motion.button type="button" onClick={() => viewProductDetails(product)}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}
+            className="absolute inset-0 bg-black/40 text-white flex items-end justify-center pb-6 font-bold">
+            <motion.span initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 20, opacity: 0 }} transition={{ duration: 0.25 }}>
+              Részletek megtekintése →
+            </motion.span>
+          </motion.button>
+        )}
+      </AnimatePresence>
+    </div>
 
-                      <motion.button
-                        className={`flex-1 py-2.5 sm:py-3 rounded text-sm sm:text-base font-bold relative overflow-hidden ${addedStates[product.id] ? 'bg-green-600 text-white cursor-not-allowed' : 'bg-black text-white'}`}
-                        onClick={() => !addedStates[product.id] && addToCart(product.id, product.name, product.price)}
-                        whileHover={addedStates[product.id] ? {} : { scale: 1.03 }}
-                        whileTap={addedStates[product.id] ? {} : { scale: 0.96 }}
-                        disabled={Boolean(addedStates[product.id])}>
-                        <AnimatePresence mode="wait">
-                          {addedStates[product.id] ? (
-                            <motion.span key="added" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                              exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }} className="block">
-                              ✓ Hozzáadva
-                            </motion.span>
-                          ) : (
-                            <motion.span key="add" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                              exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }} className="block relative z-10">
-                              Kosárba
-                            </motion.span>
-                          )}
-                        </AnimatePresence>
-                        {!addedStates[product.id] && (
-                          <motion.div className="absolute inset-0 bg-gray-800"
-                            initial={{ x: '-100%' }} whileHover={{ x: 0 }} transition={{ type: 'tween', duration: 0.3 }} />
-                        )}
-                      </motion.button>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
+    <div className="p-4 sm:p-6">
+      {/* Cím CSAK desktopon */}
+      <h3 className="hidden md:block text-xl sm:text-2xl mb-2">{product.name}</h3>
+      <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4">{product.description}</p>
+      <p className="text-lg sm:text-xl mb-3 sm:mb-4 font-semibold">
+        <PriceCounter target={product.price} prefix="RON" />
+      </p>
+      <div className="flex flex-col sm:flex-row gap-3">
+        <motion.button
+          className="flex-1 border border-black text-black py-2.5 sm:py-3 rounded text-sm sm:text-base font-bold relative overflow-hidden"
+          onClick={() => viewProductDetails(product)}
+          whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.96 }}>
+          <span className="relative z-10">Részletek</span>
+          <motion.div className="absolute bottom-0 left-0 h-0.5 bg-black"
+            initial={{ width: 0 }} whileHover={{ width: '100%' }} transition={{ type: 'tween', duration: 0.3 }} />
+        </motion.button>
+
+        <motion.button
+          className={`flex-1 py-2.5 sm:py-3 rounded text-sm sm:text-base font-bold relative overflow-hidden ${addedStates[product.id] ? 'bg-green-600 text-white cursor-not-allowed' : 'bg-black text-white'}`}
+          onClick={() => !addedStates[product.id] && addToCart(product.id, product.name, product.price)}
+          whileHover={addedStates[product.id] ? {} : { scale: 1.03 }}
+          whileTap={addedStates[product.id] ? {} : { scale: 0.96 }}
+          disabled={Boolean(addedStates[product.id])}>
+          <AnimatePresence mode="wait">
+            {addedStates[product.id] ? (
+              <motion.span key="added" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }} className="block">
+                ✓ Hozzáadva
+              </motion.span>
+            ) : (
+              <motion.span key="add" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }} className="block relative z-10">
+                Kosárba
+              </motion.span>
+            )}
+          </AnimatePresence>
+          {!addedStates[product.id] && (
+            <motion.div className="absolute inset-0 bg-gray-800"
+              initial={{ x: '-100%' }} whileHover={{ x: 0 }} transition={{ type: 'tween', duration: 0.3 }} />
+          )}
+        </motion.button>
+      </div>
+    </div>
+  </motion.div>
+))}
             </div>
           </section>
 

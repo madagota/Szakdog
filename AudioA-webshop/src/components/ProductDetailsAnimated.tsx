@@ -150,130 +150,161 @@ const selectImage = (index: number) =>
       </div>
 
       {/* Hero Szekció */}
-      <section className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            whileHover={{ scale: 1.02 }}
-            className="transition-transform duration-300"
-          >
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-gray-100">
-              <img
-                src={currentImage}
-                alt={`${product.name} kép ${currentImageIndex + 1}`}
-                className="w-full h-[520px] sm:h-[560px] object-contain"
+     {/* Hero Szekció */}
+<section className="max-w-7xl mx-auto px-6 py-12">
+  <div className="grid lg:grid-cols-2 gap-16 items-center">
+
+    {/* BAL OLDAL: Kép */}
+    <motion.div
+      initial={{ opacity: 0, x: -50 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.6 }}
+      whileHover={{ scale: 1.02 }}
+      className="transition-transform duration-300"
+    >
+      {/* Cím + értékelés CSAK mobilon, kép felett */}
+      <motion.div
+        className="block lg:hidden mb-6"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
+        <h1 className="text-3xl font-bold mb-3">{product.name}</h1>
+        <div className="flex items-center gap-2">
+          <div className="flex gap-0.5">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Star
+                key={star}
+                className={`w-4 h-4 ${
+                  star <= Math.round(averageRating)
+                    ? "fill-yellow-400 text-yellow-400"
+                    : "text-gray-300"
+                }`}
               />
-
-              <button
-                onClick={handlePrevImage}
-                className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/70 text-white w-11 h-11 flex items-center justify-center shadow-lg hover:bg-black transition-colors"
-                aria-label="Előző kép"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-
-              <button
-                onClick={handleNextImage}
-                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/70 text-white w-11 h-11 flex items-center justify-center shadow-lg hover:bg-black transition-colors"
-                aria-label="Következő kép"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-black/40 backdrop-blur-xl rounded-full px-3 py-2">
-                {galleryImages.map((image, index) => (
-                  <button
-                    key={image}
-                    onClick={() => selectImage(index)}
-                    className={`w-12 h-12 rounded-xl overflow-hidden border-2 ${index === currentImageIndex ? 'border-white' : 'border-transparent'} transition-all duration-200`}
-                    aria-label={`Kép ${index + 1}`}
-                  >
-                    <img src={image} alt={`Miniatura ${index + 1}`} className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-5xl font-bold mb-4"
-            >
-              {product.name}
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-2xl text-gray-600 mb-8"
-            >
-              {product.description}
-            </motion.p>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="mb-8"
-            >
-              <div className="flex items-baseline gap-2 mb-4">
-                <p className="text-4xl font-bold">RON {product.price}</p>
-                <p className="text-lg text-gray-500 line-through">RON {Math.round(product.price * 1.2)}</p>
-                <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-bold">-17%</span>
-              </div>
-              <p className="text-gray-500 text-sm">✓ Ingyenes szállítás | 30 napos visszavásárlás | 2 év garancia</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="space-y-3"
-            >
-              <motion.button
-                className="w-full bg-black text-white font-bold py-4 rounded-xl text-lg hover:bg-gray-800 transition-all flex items-center justify-center gap-2 group relative overflow-hidden"
-                onClick={() => onBuyNow ? onBuyNow(product.id, product.name, product.price) : onAddToCart(product.id, product.name, product.price)}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.96 }}
-              >
-                <Zap className="w-5 h-5 group-hover:animate-pulse" />
-                <span className="relative z-10">Vásárlás most</span>
-                <motion.div className="absolute inset-0 bg-gray-700" initial={{ x: '-100%' }} whileHover={{ x: 0 }} transition={{ type: 'tween', duration: 0.3 }} />
-              </motion.button>
-
-              <motion.button
-                className="w-full border-2 border-black text-black font-bold py-3 rounded-xl text-lg hover:bg-green-50 transition-all flex items-center justify-center gap-2 relative overflow-hidden"
-                onClick={() => handleAddToCartWithCheckmark(product.id, product.name, product.price)}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.96 }}
-              >
-                {showAddedCheckmark ? (
-                  <>
-                    <motion.span initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }} transition={{ type: 'spring', stiffness: 400 }}>
-                      <Check className="w-5 h-5 text-green-600" />
-                    </motion.span>
-                    <span className="text-green-600">Hozzáadva!</span>
-                  </>
-                ) : (
-                  <>
-                    <ShoppingCart className="w-5 h-5" />
-                    Kosárba
-                  </>
-                )}
-              </motion.button>
-            </motion.div>
-          </motion.div>
+            ))}
+          </div>
+          <span className="text-sm font-bold">{averageRating.toFixed(1)}</span>
+          <span className="text-sm text-gray-500">({reviews.length} értékelés)</span>
         </div>
-      </section>
+      </motion.div>
+
+      {/* Kép */}
+      <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-gray-100">
+        <img
+          src={currentImage}
+          alt={`${product.name} kép ${currentImageIndex + 1}`}
+          className="w-full h-[520px] sm:h-[560px] object-contain"
+        />
+        <button
+          onClick={handlePrevImage}
+          className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/70 text-white w-11 h-11 flex items-center justify-center shadow-lg hover:bg-black transition-colors"
+          aria-label="Előző kép"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        <button
+          onClick={handleNextImage}
+          className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/70 text-white w-11 h-11 flex items-center justify-center shadow-lg hover:bg-black transition-colors"
+          aria-label="Következő kép"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-black/40 backdrop-blur-xl rounded-full px-3 py-2">
+          {galleryImages.map((image, index) => (
+            <button
+              key={image}
+              onClick={() => selectImage(index)}
+              className={`w-12 h-12 rounded-xl overflow-hidden border-2 ${index === currentImageIndex ? 'border-white' : 'border-transparent'} transition-all duration-200`}
+              aria-label={`Kép ${index + 1}`}
+            >
+              <img src={image} alt={`Miniatura ${index + 1}`} className="w-full h-full object-cover" />
+            </button>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+
+    {/* JOBB OLDAL: Info */}
+    <motion.div
+      initial={{ opacity: 0, x: 50 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.6, delay: 0.1 }}
+    >
+      {/* Cím CSAK desktopon */}
+      <motion.h1
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="hidden lg:block text-5xl font-bold mb-4"
+      >
+        {product.name}
+      </motion.h1>
+
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+        className="text-2xl text-gray-600 mb-8"
+      >
+        {product.description}
+      </motion.p>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
+        className="mb-8"
+      >
+        <div className="flex items-baseline gap-2 mb-4">
+          <p className="text-4xl font-bold">RON {product.price}</p>
+          <p className="text-lg text-gray-500 line-through">RON {Math.round(product.price * 1.2)}</p>
+          <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-bold">-17%</span>
+        </div>
+        <p className="text-gray-500 text-sm">✓ Ingyenes szállítás | 30 napos visszavásárlás | 2 év garancia</p>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.5 }}
+        className="space-y-3"
+      >
+        <motion.button
+          className="w-full bg-black text-white font-bold py-4 rounded-xl text-lg hover:bg-gray-800 transition-all flex items-center justify-center gap-2 group relative overflow-hidden"
+          onClick={() => onBuyNow ? onBuyNow(product.id, product.name, product.price) : onAddToCart(product.id, product.name, product.price)}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.96 }}
+        >
+          <Zap className="w-5 h-5 group-hover:animate-pulse" />
+          <span className="relative z-10">Vásárlás most</span>
+          <motion.div className="absolute inset-0 bg-gray-700" initial={{ x: '-100%' }} whileHover={{ x: 0 }} transition={{ type: 'tween', duration: 0.3 }} />
+        </motion.button>
+
+        <motion.button
+          className="w-full border-2 border-black text-black font-bold py-3 rounded-xl text-lg hover:bg-green-50 transition-all flex items-center justify-center gap-2 relative overflow-hidden"
+          onClick={() => handleAddToCartWithCheckmark(product.id, product.name, product.price)}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.96 }}
+        >
+          {showAddedCheckmark ? (
+            <>
+              <motion.span initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }} transition={{ type: 'spring', stiffness: 400 }}>
+                <Check className="w-5 h-5 text-green-600" />
+              </motion.span>
+              <span className="text-green-600">Hozzáadva!</span>
+            </>
+          ) : (
+            <>
+              <ShoppingCart className="w-5 h-5" />
+              Kosárba
+            </>
+          )}
+        </motion.button>
+      </motion.div>
+    </motion.div>
+
+  </div>
+</section>
 
       {/* Jellemzők Szekció */}
       <section className="bg-gradient-to-b from-gray-50 to-white py-20 mt-20">

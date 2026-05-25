@@ -431,36 +431,48 @@ export default function App() {
       <section id="products" className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-20">
         <h2 className="text-4xl text-center font-bold mb-16">Kollekciónk</h2>
         <div className="grid md:grid-cols-2 gap-12">
-          {products.map((product) => (
-            <div key={product.id} className="border border-gray-200 rounded-lg overflow-hidden flex flex-col">
-             <div style={{ height: '384px', overflow: 'hidden', position: 'relative', backgroundColor: '#f3f4f6' }}>
-    <img 
-      src={product.image} 
-      alt={product.name} 
-      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-    />
+          {/* Termékek Szekció */}
+{products.map((product) => (
+  <div key={product.id} className="border border-gray-200 rounded-lg overflow-hidden flex flex-col">
+    
+    {/* Cím CSAK mobilon a kép felett */}
+    <div className="block md:hidden px-6 pt-5 pb-3">
+      <h3 className="text-2xl font-bold">{product.name}</h3>
+    </div>
+
+    {/* Kép */}
+    <div style={{ height: '384px', overflow: 'hidden', position: 'relative', backgroundColor: '#f3f4f6' }}>
+      <img 
+        src={product.image} 
+        alt={product.name} 
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+      />
+    </div>
+
+    {/* Szöveg rész */}
+    <div className="p-6 flex flex-col flex-1">
+      {/* Cím CSAK desktopon itt jelenik meg */}
+      <h3 className="hidden md:block text-2xl font-bold mb-2">{product.name}</h3>
+      <p className="text-gray-600 mb-4">{product.description}</p>
+      <p className="text-xl font-bold mb-6 mt-auto">RON {product.price}</p>
+      <div className="flex flex-col sm:flex-row gap-3 mt-auto">
+        <button 
+          className="flex-1 border-2 border-black text-black font-bold py-3 rounded hover:bg-gray-100"
+          onClick={() => viewProductDetails(product)}
+        >
+          Részletek
+        </button>
+        <button 
+          className="flex-1 bg-black text-white font-bold py-3 rounded hover:bg-gray-800"
+          onClick={() => addToCart(product.id)}
+        >
+          Kosárba
+        </button>
+      </div>
+    </div>
+
   </div>
-              <div className="p-6 flex flex-col flex-1">
-                <h3 className="text-2xl font-bold mb-2">{product.name}</h3>
-                <p className="text-gray-600 mb-4">{product.description}</p>
-                <p className="text-xl font-bold mb-6 mt-auto">RON {product.price}</p>
-                <div className="flex flex-col sm:flex-row gap-3 mt-auto">
-                  <button 
-                    className="flex-1 border-2 border-black text-black font-bold py-3 rounded hover:bg-gray-100"
-                    onClick={() => viewProductDetails(product)}
-                  >
-                    Részletek
-                  </button>
-                  <button 
-                    className="flex-1 bg-black text-white font-bold py-3 rounded hover:bg-gray-800"
-                    onClick={() => addToCart(product.id)}
-                  >
-                    Kosárba
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+))}
         </div>
       </section>
 
