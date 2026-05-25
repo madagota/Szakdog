@@ -1,5 +1,5 @@
 import { ArrowLeft, Check, CreditCard, Lock, ShieldCheck } from 'lucide-react';
-import { useState } from 'react';
+import { useState, type JSX } from 'react';
 import { HeadphoneCableProgress } from './HeadphoneCableProgress';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -48,7 +48,7 @@ interface CheckoutProps {
   animated?: boolean;
 }
 
-export function Checkout({ cartItems, cartTotal, onBack, onComplete, animated = false }: CheckoutProps) {
+export function Checkout({ cartItems, cartTotal, onBack, onComplete, animated = false }: CheckoutProps) : JSX.Element {
   const [step, setStep] = useState<'shipping' | 'payment' | 'complete'>('shipping');
   const [formData, setFormData] = useState({
     email: '',
@@ -70,10 +70,15 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete, animated = 
     if (errors[e.target.name]) {
       setErrors({ ...errors, [e.target.name]: '' });
     }
+    if(animated) {
+      setTouched({ ...touched, [e.target.name]: true });
+    }
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    setTouched({ ...touched, [e.target.name]: true });
+    if(animated) {
+      setTouched({ ...touched, [e.target.name]: true });
+    }
   };
 
   const isFieldValid = (name: string): boolean => {
@@ -130,6 +135,12 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete, animated = 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       // Scroll to first error
+      if (!animated) {
+        setTouched({
+            email: true, firstName: true, lastName: true,
+           address: true, city: true, state: true, zipCode: true
+        });
+      }
       const firstErrorKey = Object.keys(newErrors)[0];
       const el = document.querySelector(`[name="${firstErrorKey}"]`);
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -143,6 +154,9 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete, animated = 
     const newErrors = validatePayment();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      if (!animated) {
+        setTouched(prev => ({ ...prev, cardNumber: true, expiry: true, cvv: true }));
+    }
       const firstErrorKey = Object.keys(newErrors)[0];
       const el = document.querySelector(`[name="${firstErrorKey}"]`);
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
