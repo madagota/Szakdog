@@ -484,12 +484,7 @@ const selectImage = (index: number) =>
                 <h3 className="text-lg font-bold mb-2">{review.title}</h3>
                 <p className="text-gray-600 leading-relaxed">{review.comment}</p>
 
-                <motion.button
-                  className="mt-4 text-sm font-bold text-gray-500 hover:text-black transition-colors flex items-center gap-2"
-                  whileHover={{ x: 4 }}
-                >
-                  Hasznos volt ez az értékelés? →
-                </motion.button>
+                
               </motion.div>
             ))}
           </div>
