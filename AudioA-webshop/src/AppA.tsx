@@ -232,7 +232,7 @@ export default function App() {
                 onClick={() => setShowWelcome(false)} 
                 className="w-full bg-black text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-900 transition-colors"
               >
-                Értettem, kezdjük a tesztet!
+                Kezdés!
               </button>
             </div>
           </div>
@@ -346,13 +346,13 @@ export default function App() {
               <br/><br/>
               <strong className="text-black text-lg sm:text-xl">Nézz körül, és &quot;rendelj meg&quot; egy fejhallgatót!</strong>
               <br/><br/>
-              A fizetésnél nyugodtan adj meg kamu adatokat, ez csak egy szimuláció. A rendelés végén egy rövid kérdőív vár rád.
+              A fizetésnél nyugodtan adj meg <strong>kamu adatokat</strong>, ez csak egy szimuláció. A rendelés végén egy rövid kérdőív vár rád.
             </p>
             <button 
               onClick={() => setShowWelcome(false)} 
               className="w-full bg-black text-white px-8 py-4 rounded-2xl font-bold text-lg"
             >
-              Értettem, kezdjük a tesztet!
+              Kezdés!
             </button>
           </div>
         </div>
@@ -407,14 +407,14 @@ export default function App() {
 {/* Features Section */}
 <section id="features" className="bg-gray-50 py-12 sm:py-16 md:py-20">
   <div className="max-w-7xl mx-auto px-4 sm:px-6">
-    <h2 className="text-3xl sm:text-4xl text-center mb-10 sm:mb-16">
+    <h2 className="text-4xl text-center font-bold mb-16">
       Miért válassza az AudioA-t?
     </h2>
     <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
       {[
-        { title: "Kiváló hangzás", description: "Tapasztalja meg a stúdió minőségű hangzást mély basszussal és kristálytiszta magasakkal." },
-        { title: "Egész napos kényelem", description: "Ergonomikus kialakítás prémium párnázással a hosszú zenehallgatáshoz." },
-        { title: "Hosszú üzemidő", description: "Akár 40 óra vezeték nélküli lejátszás egyetlen töltéssel." }
+        { title: "Studióhangzás. Bárhol.", description: "Lépjen be a részletgazdag hangzások világába. A precízen hangolt akusztika mély, telt basszusokat és kristálytiszta magasakat hoz el a mindennapjaiba." },
+        { title: "Időtálló, prémium anyagok.", description: "Nemcsak szép, strapabíró is. Az eloxált alumínium zsanérok és a megerősített fejpánt garantálják, hogy a fejhallgató éveken át ellenálljon a mindennapi használat kihívásainak." },
+        { title: "Hosszú üzemidő", description: "Felejtse el a folyamatos töltögetést. Az akár 40 órás üzemidő azt jelenti, hogy a fejhallgatója készen áll a teljes munkahétre, az utazásokra és a hétvégi kikapcsolódásra is." }
       ].map((feature, index) => (
         <div key={index} className="text-center">
           <div className="w-14 h-14 sm:w-16 sm:h-16 bg-black rounded-full mx-auto mb-3 sm:mb-4 flex items-center justify-center">
@@ -433,12 +433,13 @@ export default function App() {
         <div className="grid md:grid-cols-2 gap-12">
           {products.map((product) => (
             <div key={product.id} className="border border-gray-200 rounded-lg overflow-hidden flex flex-col">
-              <img 
-                src={product.image}
-                alt={product.name}
-              // className="w-full h-64 sm:h-80 object-cover"
-              className="w-full object-cover" style={{minHeight: '300px'}}
-              />
+             <div style={{ height: '384px', overflow: 'hidden', position: 'relative', backgroundColor: '#f3f4f6' }}>
+    <img 
+      src={product.image} 
+      alt={product.name} 
+      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+    />
+  </div>
               <div className="p-6 flex flex-col flex-1">
                 <h3 className="text-2xl font-bold mb-2">{product.name}</h3>
                 <p className="text-gray-600 mb-4">{product.description}</p>
@@ -463,54 +464,41 @@ export default function App() {
         </div>
       </section>
 
-      {/* Jellemzők Szekció */}
-      <section id="features" className="bg-gray-50 py-20">
-        <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-4xl text-center font-bold mb-16">Miért válassza az AudioA-t?</h2>
-          <div className="grid md:grid-cols-3 gap-12">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-black rounded-full mx-auto mb-4 flex items-center justify-center">
-                <div className="w-8 h-8 bg-white rounded-full" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Kiváló hangzás</h3>
-              <p className="text-gray-600">
-                Tapasztalja meg a stúdió minőségű hangzást mély basszussal és kristálytiszta magasakkal.
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-black rounded-full mx-auto mb-4 flex items-center justify-center">
-                <div className="w-8 h-8 bg-white rounded-full" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Egész napos kényelem</h3>
-              <p className="text-gray-600">
-                Ergonomikus kialakítás prémium párnázással a hosszú zenehallgatáshoz.
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-black rounded-full mx-auto mb-4 flex items-center justify-center">
-                <div className="w-8 h-8 bg-white rounded-full" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Hosszú üzemidő</h3>
-              <p className="text-gray-600">
-                Akár 40 óra vezeték nélküli lejátszás egyetlen töltéssel.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      
 
       {/* Rólunk Szekció */}
-      <section id="about" className="bg-white py-20">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-6">Rólunk</h2>
-          <p className="text-gray-600 mb-4 text-lg">
-            Az AudioA-t egy egyszerű küldetéssel alapítottuk: kivételes hangélményt nyújtani minden zene szerelmese számára. Hiszünk abban, hogy a kiváló hangzás nem lehet luxus.
-          </p>
-          <p className="text-gray-600 text-lg">
-            Hangmérnökökből és tervezőkből álló csapatunk fáradhatatlanul dolgozik azon, hogy olyan fejhallgatókat hozzon létre, amelyek a legmodernebb technológiát ötvözik az időtálló dizájnnal.
-          </p>
-        </div>
-      </section>
+<section id="about" className="bg-white py-20">
+  <div className="max-w-6xl mx-auto px-6">
+    <div className="grid md:grid-cols-2 gap-16 items-center">
+      <div>
+        <p className="text-xs font-bold tracking-[0.2em] uppercase text-gray-400 mb-4">A mi történetünk</p>
+        <h2 className="text-4xl font-bold mb-6 leading-tight">
+          A hangzás iránti szenvedély hajtja minden döntésünket.
+        </h2>
+        <p className="text-gray-600 mb-5 text-lg leading-relaxed">
+          Az AudioA-t egy egyszerű küldetéssel alapítottuk: kivételes hangélményt nyújtani minden zene szerelmese számára. Hiszünk abban, hogy a kiváló hangzás nem lehet luxus — mindenki megérdemli.
+        </p>
+        <p className="text-gray-600 text-lg leading-relaxed">
+          Hangmérnökökből és tervezőkből álló csapatunk fáradhatatlanul dolgozik azon, hogy olyan fejhallgatókat hozzon létre, amelyek a legmodernebb technológiát ötvözik az időtálló dizájnnal.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-6">
+        {[
+          { number: "40h", label: "Üzemidő egyetlen töltéssel" },
+          { number: "2 év", label: "Teljes körű garancia" },
+          { number: "Hi-Res", label: "Minősített hangzás" },
+          { number: "250g", label: "Könnyű, kényelmes viselet" },
+        ].map((stat) => (
+          <div key={stat.number} className="border border-gray-100 rounded-2xl p-6">
+            <p className="text-3xl font-bold mb-1">{stat.number}</p>
+            <p className="text-sm text-gray-500">{stat.label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
 
       </div>
 

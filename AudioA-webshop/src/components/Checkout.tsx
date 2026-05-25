@@ -327,7 +327,6 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete, animated = 
         </div>
       </div>
 
-      {/* Elfogadott kártyák */}
       <div className="flex items-center gap-3">
         <span className="text-xs text-gray-500">Elfogadott kártyák:</span>
         <div className="flex gap-2">
@@ -339,56 +338,83 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete, animated = 
         </div>
       </div>
 
-     <div>
-  <label className="block text-sm font-medium text-gray-700 mb-1">Kártyaszám <span className="text-red-500">*</span></label>
-  <div className="relative">
-    <input type="text" name="cardNumber" value={formData.cardNumber}
-      onChange={(e) => {
-        const value = e.target.value.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
-        setFormData({ ...formData, cardNumber: value });
-        if (errors.cardNumber) setErrors({ ...errors, cardNumber: '' });
-      }}
-      onBlur={handleBlur} placeholder="1234 5678 9012 3456" maxLength={19} required
-      className={`w-full border p-3 pl-10 rounded-lg outline-none transition-colors ${errors.cardNumber ? 'border-red-400 focus:ring-2 focus:ring-red-300' : isFieldValid('cardNumber') ? 'border-green-400' : 'border-gray-300 focus:ring-2 focus:ring-black'}`} />
-    <CreditCard className="w-5 h-5 absolute left-3 top-3.5 text-gray-400" />
-    <ValidCheck show={isFieldValid('cardNumber') && !errors.cardNumber} />
-  </div>
-  <ErrorMsg error={errors.cardNumber} />
-</div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Kártyaszám <span className="text-red-500">*</span>
+        </label>
+        <div className="relative">
+          <input
+            type="text"
+            name="cardNumber"
+            value={formData.cardNumber}
+            onChange={(e) => {
+              const value = e.target.value.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
+              setFormData({ ...formData, cardNumber: value });
+              if (errors.cardNumber) setErrors({ ...errors, cardNumber: '' });
+            }}
+            onBlur={handleBlur}
+            placeholder="1234 5678 9012 3456"
+            maxLength={19}
+            required
+            className={`w-full border p-3 pl-10 rounded-lg outline-none transition-colors ${errors.cardNumber ? 'border-red-400 focus:ring-2 focus:ring-red-300' : isFieldValid('cardNumber') ? 'border-green-400' : 'border-gray-300 focus:ring-2 focus:ring-black'}`}
+          />
+          <CreditCard className="w-5 h-5 absolute left-3 top-3.5 text-gray-400" />
+          <ValidCheck show={isFieldValid('cardNumber') && !errors.cardNumber} />
+        </div>
+        <ErrorMsg error={errors.cardNumber} />
+      </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-  <label className="block text-sm font-medium text-gray-700 mb-1">Lejárati dátum <span className="text-red-500">*</span></label>
-  <div className="relative">
-    <input type="text" name="expiry" value={formData.expiry}
-      onChange={(e) => {
-        let value = e.target.value.replace(/\D/g, '');
-        if (value.length >= 2) value = value.slice(0, 2) + '/' + value.slice(2, 4);
-        setFormData({ ...formData, expiry: value });
-        if (errors.expiry) setErrors({ ...errors, expiry: '' });
-      }}
-      onBlur={handleBlur} placeholder="HH/ÉÉ" maxLength={5} required
-      className={`w-full border p-3 rounded-lg outline-none transition-colors ${errors.expiry ? 'border-red-400 focus:ring-2 focus:ring-red-300' : isFieldValid('expiry') ? 'border-green-400' : 'border-gray-300 focus:ring-2 focus:ring-black'}`} />
-    <ValidCheck show={isFieldValid('expiry') && !errors.expiry} />
-  </div>
-  <ErrorMsg error={errors.expiry} />
-</div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Lejárati dátum <span className="text-red-500">*</span>
+          </label>
+          <div className="relative">
+            <input
+              type="text"
+              name="expiry"
+              value={formData.expiry}
+              onChange={(e) => {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length >= 2) value = value.slice(0, 2) + '/' + value.slice(2, 4);
+                setFormData({ ...formData, expiry: value });
+                if (errors.expiry) setErrors({ ...errors, expiry: '' });
+              }}
+              onBlur={handleBlur}
+              placeholder="HH/ÉÉ"
+              maxLength={5}
+              required
+              className={`w-full border p-3 rounded-lg outline-none transition-colors ${errors.expiry ? 'border-red-400 focus:ring-2 focus:ring-red-300' : isFieldValid('expiry') ? 'border-green-400' : 'border-gray-300 focus:ring-2 focus:ring-black'}`}
+            />
+            <ValidCheck show={isFieldValid('expiry') && !errors.expiry} />
+          </div>
+          <ErrorMsg error={errors.expiry} />
+        </div>
 
         <div>
-  <label className="block text-sm font-medium text-gray-700 mb-1">CVV <span className="text-red-500">*</span></label>
-  <div className="relative">
-    <input type="text" name="cvv" value={formData.cvv}
-      onChange={(e) => {
-        const value = e.target.value.replace(/\D/g, '').slice(0, 4);
-        setFormData({ ...formData, cvv: value });
-        if (errors.cvv) setErrors({ ...errors, cvv: '' });
-      }}
-      onBlur={handleBlur} placeholder="123" maxLength={4} required
-      className={`w-full border p-3 rounded-lg outline-none transition-colors ${errors.cvv ? 'border-red-400 focus:ring-2 focus:ring-red-300' : isFieldValid('cvv') ? 'border-green-400' : 'border-gray-300 focus:ring-2 focus:ring-black'}`} />
-    <ValidCheck show={isFieldValid('cvv') && !errors.cvv} />
-  </div>
-  <ErrorMsg error={errors.cvv} />
-</div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            CVV <span className="text-red-500">*</span>
+          </label>
+          <div className="relative">
+            <input
+              type="text"
+              name="cvv"
+              value={formData.cvv}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, '').slice(0, 4);
+                setFormData({ ...formData, cvv: value });
+                if (errors.cvv) setErrors({ ...errors, cvv: '' });
+              }}
+              onBlur={handleBlur}
+              placeholder="123"
+              maxLength={4}
+              required
+              className={`w-full border p-3 rounded-lg outline-none transition-colors ${errors.cvv ? 'border-red-400 focus:ring-2 focus:ring-red-300' : isFieldValid('cvv') ? 'border-green-400' : 'border-gray-300 focus:ring-2 focus:ring-black'}`}
+            />
+            <ValidCheck show={isFieldValid('cvv') && !errors.cvv} />
+          </div>
+          <ErrorMsg error={errors.cvv} />
+        </div>
       </div>
 
       <p className="text-xs text-gray-400">* kötelező mező</p>
@@ -439,7 +465,6 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete, animated = 
         )}
       </div>
 
-      {/* Trust signals */}
       <div className="flex items-center justify-center gap-2 text-xs text-gray-400 mt-2">
         <ShieldCheck className="w-4 h-4" />
         <span>256-bit SSL titkosítás · Pénzvisszafizetési garancia 30 napig</span>
@@ -447,7 +472,7 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete, animated = 
     </form>
   );
 
-  return (
+return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-6 py-6">
         {animated ? (
@@ -549,12 +574,12 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete, animated = 
                   <span>Ingyenes</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
-                  <span>Adó (10%)</span>
-                  <span>RON {(cartTotal * 0.1).toFixed(2)}</span>
+                  <span>Adó (21%)</span>
+                  <span>RON {(cartTotal * 0.21 / 1.21).toFixed(2)}</span>
                 </div>
                 <div className="border-t border-gray-200 pt-3 flex justify-between text-xl font-bold">
                   <span>Végösszeg</span>
-                  <span>RON {(cartTotal * 1.1).toFixed(2)}</span>
+                  <span>RON {cartTotal }</span>
                 </div>
               </div>
 

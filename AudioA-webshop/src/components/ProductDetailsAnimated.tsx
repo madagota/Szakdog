@@ -1,7 +1,6 @@
 import { ArrowLeft, Check, ChevronLeft, ChevronRight, Star, ShoppingCart, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
-
+import { useState } from 'react';
 import proSlide1 from '../assets/pexels-caleboquendo-7772549.jpg';
 import proSlide2 from '../assets/pexels-caleboquendo-7772547.jpg';
 import proSlide3 from '../assets/pexels-dario-fernandez-ruz-9130505.jpg';
@@ -29,41 +28,23 @@ interface ProductDetailsProps {
 export default function ProductDetailsAnimated({ product, onBack, onAddToCart, onBuyNow }: ProductDetailsProps) {
   const [hoveredFeature, setHoveredFeature] = useState<number | null>(null);
   const [showRating, setShowRating] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [showAddedCheckmark, setShowAddedCheckmark] = useState(false);
+  const [imageState, setImageState] = useState({ productId: product.id, index: 0 });
+const [showAddedCheckmark, setShowAddedCheckmark] = useState(false);
 
-  const proImages = [
-    proSlide1,
-    proSlide2,
-    proSlide3,
-    proSlide4,
-    proSlide5,
-  ];
+const proImages = [proSlide1, proSlide2, proSlide3, proSlide4, proSlide5];
+const studioImages = [studioSlide1, studioSlide2, studioSlide3, studioSlide4, studioSlide5];
+const galleryImages = product.id === 1 ? proImages : studioImages;
 
-  const studioImages = [
-    studioSlide1,
-    studioSlide2,
-    studioSlide3,
-    studioSlide4,
-    studioSlide5,
-  ];
+const currentImageIndex = imageState.productId === product.id ? imageState.index : 0;
+const currentImage = galleryImages[currentImageIndex];
+const handleNextImage = () =>
+  setImageState({ productId: product.id, index: (currentImageIndex + 1) % galleryImages.length });
 
-  const galleryImages = product.id === 1 ? proImages : studioImages;
-  const currentImage = galleryImages[currentImageIndex];
+const handlePrevImage = () =>
+  setImageState({ productId: product.id, index: (currentImageIndex - 1 + galleryImages.length) % galleryImages.length });
 
-  useEffect(() => {
-    setCurrentImageIndex(0);
-  }, [product.id]);
-
-  const handleNextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length);
-  };
-
-  const handlePrevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
-  };
-
-  const selectImage = (index: number) => setCurrentImageIndex(index);
+const selectImage = (index: number) =>
+  setImageState({ productId: product.id, index });
 
   const handleAddToCartWithCheckmark = (id: number, name: string, price: number) => {
     setShowAddedCheckmark(true);
@@ -71,43 +52,61 @@ export default function ProductDetailsAnimated({ product, onBack, onAddToCart, o
     setTimeout(() => setShowAddedCheckmark(false), 1000);
   };
 
-  const features = [
+  const features = product.id === 1 ? [
     "Aktív zajszűrés a lenyűgöző hangzásért",
     "Transzparencia mód a környezet érzékeléséhez",
     "Adaptív EQ, ami automatikusan a füledhez hangolja a zenét",
     "Akár 40 óra akkumulátor-üzemidő",
     "Prémium memóriahabos párnák az egész napos kényelemért",
-    "Térbeli hangzás dinamikus fejkövetéssel",
+    "4-mikrofonos beamforming technológia a krisztálytiszta hivásokért.",
+    "USB-C villámgyors töltési lehetőség",
+    "Összecsukható dizájn prémium hordtáskával.",
+  ] : [
+    "Intelligens hibrid zajszűrés a zavartalan fókuszért és stúdióélményért.",
+    "Transzparencia mód a környezet azonnali, természetes érzékeléséhez.",
+    "Adaptív EQ és stúdió-profilok a fülhöz és műfajhoz igazodó hangzásért.",
+    "Kiemelkedő, 40 órás üzemidő vezeték nélküli stúdióreferencia-módban.",
+    "Pro-szintű memóriahabos párnák a nyomásmentes, egész napos kényelemért.",
+    "Térbeli hangzás dinamikus fejkövetéssel a magával ragadó dimenziókért.",
     "USB-C gyorstöltési lehetőség",
-    "Összecsukható dizájn prémium hordtáskával"
+    "Robusztus, fémvázas konstrukció és prémium keménytok az időtálló védelemért.",
   ];
 
-  const specs = [
-    { label: "Hangszóró mérete", value: "40mm" },
+  const specs = product.id === 1 ? [
+    { label: "Hangszóró mérete", value: "40mm-es High-Definition dinamikus driver" },
     { label: "Frekvenciaátvitel", value: "20Hz - 20kHz" },
+    { label: "Mikrofonok", value: "4 db beépített mikrofon szél- és környezeti zajszűréssel" },
+    { label: "Súly", value: "230g" },
+    { label: "Bluetooth®", value: "5.3" },
+    { label: "Támogatott kodekek", value: "AAC, SBC, aptX Adaptive" },
+    { label: "Akkumulátor", value: "Akár 40 óra" },
+    { label: "Garancia", value: "2 év" },
+  ] : [
+    { label: "Hangszóró mérete", value: "40mm-es egyedi fejlesztésű dinamikus driver" },
+    { label: "Frekvenciaátvitel", value: "4Hz - 40.000 Hz (Hi-Res Audio)" },
     { label: "Impedancia", value: "32 Ohm" },
     { label: "Súly", value: "250g" },
-    { label: "Bluetooth", value: "5.2" },
+    { label: "Bluetooth®", value: "5.2" },
     { label: "Támogatott kodekek", value: "AAC, aptX HD, LDAC" },
     { label: "Töltési idő", value: "2 óra" },
-    { label: "Garancia", value: "2 év" }
+    { label: "Garancia", value: "2 év" },
   ];
 
-  const reviews = product.id === 1 ? [
+    const reviews = product.id === 1 ? [
     {
       id: 1,
-      name: "Sarah Johnson",
+      name: "Fekete Sára",
       rating: 5,
-      date: "2024. December 15.",
+      date: "2025. December 15.",
       title: "A legjobb fejhallgató, amit valaha használtam",
       comment: "A zajszűrés hihetetlen! Munkahívásokhoz és zenéhez is használom. Az akkumulátor simán kibír egy egész hetet.",
       verified: true
     },
     {
       id: 2,
-      name: "Michael Chen",
+      name: "Szabó Péter",
       rating: 5,
-      date: "2024. December 10.",
+      date: "2026. Április 10.",
       title: "Minden fillért megért",
       comment: "Lenyűgöző hangminőség. A basszus mély, de nem túlzó, a magas hangok pedig kristálytiszták. Nagyon kényelmes is!",
       verified: true
@@ -115,18 +114,18 @@ export default function ProductDetailsAnimated({ product, onBack, onAddToCart, o
   ] : [
     {
       id: 1,
-      name: "Alex Martinez",
+      name: "Kovács István",
       rating: 5,
-      date: "2024. December 18.",
+      date: "2025. Augusztus 18.",
       title: "Professzionális minőség",
       comment: "Az otthoni stúdiómban használom, és fenomenálisak. A részletgazdagság és a tisztaság páratlan. Minden hangszer tökéletesen elkülönül.",
       verified: true
     },
     {
       id: 2,
-      name: "Lisa Thompson",
+      name: "Nagy Anna",
       rating: 5,
-      date: "2024. December 12.",
+      date: "2026. Január 22.",
       title: "Tökéletes keveréshez",
       comment: "A lapos frekvenciaválasz miatt ideális keveréshez. Végre hallom, hogyan szólnak valójában a zenéim színezés nélkül.",
       verified: true
