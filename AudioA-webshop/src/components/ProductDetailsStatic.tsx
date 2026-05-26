@@ -357,9 +357,7 @@ const currentImage = galleryImages[currentImageIndex];
                 <h3 className="text-lg font-bold mb-2">{review.title}</h3>
                 <p className="text-gray-600 leading-relaxed">{review.comment}</p>
 
-                <button className="mt-4 text-sm font-bold text-gray-500 hover:text-black transition-colors flex items-center gap-2">
-                  Hasznos volt ez az értékelés? →
-                </button>
+                
               </div>
             ))}
           </div>
