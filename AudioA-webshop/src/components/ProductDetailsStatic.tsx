@@ -66,16 +66,16 @@ const currentImage = galleryImages[currentImageIndex];
   ];
 
   const specs = product.id === 1 ? [
-    { label: "Hangszóró mérete", value: "40mm-es High-Definition dinamikus driver" },
+    { label: "Hangszóró mérete", value: "40mm" },
     { label: "Frekvenciaátvitel", value: "20Hz - 20kHz" },
-    { label: "Mikrofonok", value: "4 db beépített mikrofon szél- és környezeti zajszűréssel" },
+    { label: "Mikrofonok", value: "4 db beépített mikrofon zajszűréssel" },
     { label: "Súly", value: "230g" },
     { label: "Bluetooth®", value: "5.3" },
     { label: "Támogatott kodekek", value: "AAC, SBC, aptX Adaptive" },
     { label: "Akkumulátor", value: "Akár 40 óra" },
     { label: "Garancia", value: "2 év" },
   ] : [
-    { label: "Hangszóró mérete", value: "40mm-es egyedi fejlesztésű dinamikus driver" },
+    { label: "Hangszóró mérete", value: "40mm" },
     { label: "Frekvenciaátvitel", value: "4Hz - 40.000 Hz (Hi-Res Audio)" },
     { label: "Impedancia", value: "32 Ohm" },
     { label: "Súly", value: "250g" },
@@ -277,14 +277,14 @@ const currentImage = galleryImages[currentImageIndex];
           <div className="max-w-3xl mx-auto">
             {specs.map((spec, index) => (
               <div
-                key={index}
-                className="border-b border-gray-200 py-6 flex justify-between items-center px-4 rounded"
-              >
-                <span className="text-gray-600 font-medium">{spec.label}</span>
-                <span className="font-bold">
-                  {spec.value}
-                </span>
-              </div>
+  key={index}
+  className="border-b border-gray-200 py-4 sm:py-6 flex flex-col sm:flex-row sm:justify-between sm:items-center px-4 rounded gap-1 sm:gap-4"
+>
+  <span className="text-gray-500 text-sm sm:text-base font-medium">{spec.label}</span>
+  <span className="font-bold text-sm sm:text-base sm:text-right">
+    {spec.value}
+  </span>
+</div>
             ))}
           </div>
         </div>

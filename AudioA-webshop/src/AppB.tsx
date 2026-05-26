@@ -73,7 +73,7 @@ function ScrollToTop() {
         <motion.button
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-8 right-8 z-50 bg-black text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg"
+           className="fixed bottom-8 right-4 sm:right-8 z-50 bg-black text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg"
           whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
         >
           <ArrowUp className="w-5 h-5" />
@@ -265,7 +265,7 @@ const viewProductDetails = (product: Product) => {
                 <motion.div key="toast"
                   initial={{ opacity: 0, x: 60 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 60 }}
                   transition={{ duration: 0.35 }}
-                  className="fixed right-4 top-24 z-[200] rounded-2xl bg-black text-white px-4 py-3 shadow-2xl flex items-center gap-2"
+                  className="fixed bottom-8 right-4 sm:right-8 z-50 rounded-2xl bg-black text-white px-4 py-3 shadow-2xl flex items-center gap-2"
                 >
                   <ShoppingCart className="w-4 h-4 shrink-0" />
                   <span>{toastMessage}</span>
@@ -277,7 +277,7 @@ const viewProductDetails = (product: Product) => {
 
         <ScrollToTop />
 
-        <div className="pt-20">
+        <div className="pt-16 sm:pt-20">
           {/* Hero szekció */}
           <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-20 relative">
             <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">

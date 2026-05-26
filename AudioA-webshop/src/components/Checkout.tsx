@@ -58,6 +58,7 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete, animated = 
     city: '',
     state: '',
     zipCode: '',
+    country: '',
     cardNumber: '',
     expiry: '',
     cvv: '',
@@ -111,6 +112,8 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete, animated = 
       newErrors.address = 'Cím megadása kötelező';
     if (formData.city.length < 2)
       newErrors.city = 'Város megadása kötelező';
+    if (!formData.country)
+  newErrors.country = 'Ország megadása kötelező';
     if (formData.state.length < 2)
       newErrors.state = 'Megye megadása kötelező';
     if (!/^\d{4,6}$/.test(formData.zipCode))
@@ -287,7 +290,29 @@ export function Checkout({ cartItems, cartTotal, onBack, onComplete, animated = 
       </div>
       <ErrorMsg error={errors.address} />
     </div>
-
+      <div>
+  <label className="block text-sm font-medium text-gray-700 mb-1">Ország <span className="text-red-500">*</span></label>
+  <div className="relative">
+    <select
+      name="country"
+      value={formData.country}
+      onChange={(e) => {
+        setFormData({ ...formData, country: e.target.value });
+        if (errors.country) setErrors({ ...errors, country: '' });
+      }}
+      required
+      className={`w-full border p-3 rounded-lg outline-none transition-colors bg-white ${errors.country ? 'border-red-400' : formData.country ? 'border-green-400' : 'border-gray-300 focus:ring-2 focus:ring-black'}`}
+    >
+      <option value="">Válassz országot...</option>
+      <option value="RO">Románia</option>
+      <option value="HU">Magyarország</option>
+      <option value="DE">Németország</option>
+      <option value="AT">Ausztria</option>
+      <option value="SK">Szlovákia</option>
+    </select>
+  </div>
+  <ErrorMsg error={errors.country} />
+</div>
     <div className="grid grid-cols-3 gap-4">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Város <span className="text-red-500">*</span></label>

@@ -210,15 +210,17 @@ export function HeaderPro({
   ];
 
   const handleNavClick = (href: string, isHome?: boolean) => {
-    setIsMobileMenuOpen(false);
-    setCartOpen(false);
-    if (isHome) { onLogoClick(); return; }
+  setIsMobileMenuOpen(false);
+  setCartOpen(false);
+  if (isHome) { onLogoClick(); return; }
+  setTimeout(() => {
     if (href.startsWith('#') && onNavigateSection) {
       onNavigateSection(href.replace('#', ''));
       return;
     }
     document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
-  };
+  }, 250);
+};
 
   // ── Desktop hover handlers (debounced leave) ──────────────────────────────────
   const handleCartMouseEnter = () => {

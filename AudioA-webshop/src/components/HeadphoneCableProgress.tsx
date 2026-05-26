@@ -1,22 +1,12 @@
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+
 
 interface HeadphoneCableProgressProps {
   step: 'shipping' | 'payment' | 'complete';
 }
 
 export function HeadphoneCableProgress({ step }: HeadphoneCableProgressProps) {
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    if (step === 'shipping') {
-      setProgress(33);
-    } else if (step === 'payment') {
-      setProgress(66);
-    } else if (step === 'complete') {
-      setProgress(100);
-    }
-  }, [step]);
+  const progress = step === 'shipping' ? 33 : step === 'payment' ? 66 : 100;
 
   return (
     <div className="relative w-full py-12">
@@ -82,7 +72,7 @@ export function HeadphoneCableProgress({ step }: HeadphoneCableProgressProps) {
         >
           <circle cx="266" cy="44" r="8" fill={progress >= 33 ? "#000" : "#E5E7EB"} />
           <text x="266" y="20" textAnchor="middle" className="text-xs fill-gray-600">
-            Shipping
+            Szállítás
           </text>
         </motion.g>
 
@@ -94,7 +84,7 @@ export function HeadphoneCableProgress({ step }: HeadphoneCableProgressProps) {
         >
           <circle cx="533" cy="84" r="8" fill={progress >= 66 ? "#000" : "#E5E7EB"} />
           <text x="533" y="110" textAnchor="middle" className="text-xs fill-gray-600">
-            Payment
+            Fizetés
           </text>
         </motion.g>
 
@@ -167,9 +157,9 @@ export function HeadphoneCableProgress({ step }: HeadphoneCableProgressProps) {
         transition={{ delay: 0.5 }}
       >
         <p className="text-sm text-gray-600">
-          {step === 'shipping' && 'Enter your shipping information'}
-          {step === 'payment' && 'Complete your payment'}
-          {step === 'complete' && 'Order successfully placed!'}
+          {step === 'shipping' && 'Adja meg a szállítási adatait'}
+          {step === 'payment' && 'Fizetés befejezése'}
+          {step === 'complete' && 'Rendelés sikeresen leadva!'}
         </p>
       </motion.div>
     </div>
