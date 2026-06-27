@@ -281,14 +281,16 @@ const selectImage = (index: number) =>
         </motion.button>
 
         <motion.button
-          className="w-full border-2 border-black text-black font-bold py-3 rounded-xl text-lg hover:bg-green-50 transition-all flex items-center justify-center gap-2 relative overflow-hidden"
+          className="w-full border-2 border-black text-black font-bold py-3 rounded-xl text-lg hover:
+          bg-green-50 transition-all flex items-center justify-center gap-2 relative overflow-hidden"
           onClick={() => handleAddToCartWithCheckmark(product.id, product.name, product.price)}
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.96 }}
         >
           {showAddedCheckmark ? (
             <>
-              <motion.span initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }} transition={{ type: 'spring', stiffness: 400 }}>
+              <motion.span initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }}
+              transition={{ type: 'spring', stiffness: 400 }}>
                 <Check className="w-5 h-5 text-green-600" />
               </motion.span>
               <span className="text-green-600">Hozzáadva!</span>

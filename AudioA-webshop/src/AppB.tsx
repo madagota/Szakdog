@@ -314,7 +314,7 @@ const viewProductDetails = (product: Product) => {
               className="absolute bottom-2 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-gray-400 cursor-pointer"
               onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
               animate={{ y: [0, 8, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}>
-              <span className="text-xs">Görgets le</span>
+              <span className="text-xs">Görgess le</span>
               <ChevronDown className="w-5 h-5" />
             </motion.div>
           </section>
